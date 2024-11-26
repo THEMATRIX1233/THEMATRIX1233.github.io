@@ -1,0 +1,127 @@
+html {
+    font-size: 10px;
+}
+
+.layout {
+    background-image: url(/profe-jess/fight-club-grunge-art-6qtjg9ievmvxpgjc.jpg);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center; 
+    align-items: center;      
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.layout::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(8px);
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.layout__content {
+    position: relative;
+    z-index: 2;
+    color: white;
+    text-align: center;
+    font-size: 2rem;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.layout__card {
+    width: 60%;   
+    max-height: 80vh;  
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    justify-content: flex-start;  
+    align-items: center;
+    z-index: 2;
+   background-image: url(/profe-jess/fight-club-rule-number-1-cecdmtltzwlqc7dy.jpg);
+   background-size: cover;
+   background-position: -200px;
+    border-radius: 10px;
+    margin-top: 3rem;
+    padding: 2rem;  
+    overflow: auto; 
+    backdrop-filter: blur(20px);
+}
+
+
+.card__title {
+    display: flex;
+    flex-direction: row;
+    padding: 1rem;
+    color: black;
+    margin-bottom: 1rem;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.title__description {
+    background-color: #ddd;
+    font-size: 2rem;
+    padding: 1rem;
+    margin-right: 1rem;
+    border-radius: 5px;
+    
+    text-align: center;
+ 
+}
+
+.title__img img {
+    width: 100%;
+    padding: .1rem;
+    max-width: 200px;
+    height: auto;
+    border-radius: 5px;
+    z-index: 2;
+    color: white;
+   
+}
+
+.card__description {
+    width: 100%;
+    font-size: 1.6rem;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+    color: #ddd;
+    font-weight: 600;
+    margin-top: 1rem;  
+    overflow-y: auto;  
+    
+}
+.layout__card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(8px);
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+.img__name{
+    z-index: 2;
+    color: white;
+    letter-spacing: 2px;
+    font-weight: 600;
+}

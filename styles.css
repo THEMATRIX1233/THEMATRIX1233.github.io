@@ -3,7 +3,7 @@ html {
 }
 
 .layout {
-    background-image: url(/profe-jess/fight-club-grunge-art-6qtjg9ievmvxpgjc.jpg);
+    background-image: url(fight-club-grunge-art-6qtjg9ievmvxpgjc.jpg);
     background-size: cover;
     background-position: center;
     display: flex;
@@ -50,7 +50,7 @@ html {
     justify-content: flex-start;  
     align-items: center;
     z-index: 2;
-   background-image: url(/profe-jess/fight-club-rule-number-1-cecdmtltzwlqc7dy.jpg);
+   background-image: url(fight-club-rule-number-1-cecdmtltzwlqc7dy.jpg);
    background-size: cover;
    background-position: -200px;
     border-radius: 10px;

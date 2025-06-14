@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temario</title>
+    <link rel="stylesheet" href="accets/styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:700&display=swap" rel="stylesheet">
+    <!-- Agregamos Tailwind CSS para usar la clase 'hidden' y simplificar el CSS -->
+    <!-- Si ya tienes una regla para .hidden en tu styles.css, puedes quitar esta línea de Tailwind. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+   
+</head>
+
+<body>
+    <header class="header">
+        <img src="accets/ipn-logo.jpg" alt="Logo del Instituto Politécnico Nacional" class="header__ipn-logo">
+        <h1 class="header__title">Temario de Programación</h1>
+        <img src="accets/esique-logo.jpg" alt="Logo de la Escuela Superior de Ingeniería Química e Industrias Extractivas" class="header__esique-logo">
+    </header>
+
+    <main class="main">
+        <!-- Cada div que contiene un tema ahora tiene la clase 'topic-item' -->
+        <!-- El título del tema tiene la clase 'topic-title' para que sea clicable -->
+        <!-- El contenido (párrafo y video) está envuelto en un 'div.topic-content' y oculto por defecto con 'hidden' -->
+
+        <div class="topic-item">
+            <h2 class="topic-title">TEMA: Entrada y salida de datos con formato libre</h2>
+            <div class="topic-content hidden">
+                <p>VIDEO DE YOUTUBE: MATLAB/Programación/Ventanas de MATLAB/Maria Jose</p>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/wcppO0fOs2Y?si=kQAycfLY8az80QHp"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="topic-item">
+            <h2 class="topic-title">TEMA: Estructuras de decisión Block if</h2>
+            <div class="topic-content hidden">
+                <p>VIDEO DE YOUTUBE: Programación//Bloques para hacer Diagramas de Flujo/Jessica</p>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/8wnMuTuAP4E?si=QrK1tAOT5GhbRTP0"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="topic-item">
+            <h2 class="topic-title">TEMA: Block if "anidados"</h2>
+            <div class="topic-content hidden">
+                <p>VIDEO DE YOUTUBE: MATLAB/Programación/Block if "anidados"</p>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/fEZQON7jj4E?si=q7X_WeDTX1N-OJmG"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="topic-item">
+            <h2 class="topic-title">TEMA: Block if compuesto</h2>
+            <div class="topic-content hidden">
+                <p>VIDEO DE YOUTUBE: MATLAB/Programación/Block if compuesto</p>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/c2tox5EIuv0?si=xuvLHUirvmixEcXB"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notar que este tema estaba anidado bajo el anterior en tu archivo original. -->
+        <!-- Lo he separado en su propio 'topic-item' para que funcione con el acordeón. -->
+        <!-- Si prefieres mantenerlo anidado, la lógica JavaScript tendría que ajustarse. -->
+        <div class="topic-item">
+            <h2 class="topic-title">TEMA: Block if compuesto "anidados"</h2>
+            <div class="topic-content hidden">
+                <p>VIDEO DE YOUTUBE: MATLAB/Programación/Block if compuesto anidados</p>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/fEZQON7jj4E?si=xLL1ceNKuXE6RVpt"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="topic-item">
+            <h2 class="topic-title">TEMA: Estructura swich case Menu</h2>
+            <div class="topic-content hidden">
+                <p>VIDEO DE YOUTUBE: MATLAB/Programación/swich case/Regina Raya</p>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/Fs_kCXNNzo8?si=Dx32WpQiacchklAp"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- El código JavaScript va al final del <body> para asegurar que el HTML ya está cargado -->
+        <script src="accets/script.js"></script>
+
+        <footer class="footer bg-[#8C213F] text-white py-12 px-6 rounded-b-2xl mt-12 font-oswald">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-10">
+    <!-- Columna Izquierda: Logo grande -->
+    <div class="flex flex-col items-center md:items-start w-full md:w-1/4 mb-6 md:mb-0">
+      <img src="accets/esique-logo.jpg" alt="Burrito IPN" class="w-36 h-36 object-contain mb-4 drop-shadow-xl" />
+    </div>
+    <!-- Columna Centro: Información institucional -->
+    <div class="flex flex-col items-center w-full md:w-2/4 text-center">
+      <strong class="text-4xl md:text-5xl tracking-wide mb-2">Instituto Politécnico Nacional</strong>
+      <span class="text-2xl md:text-3xl mb-1">Escuela Superior de Ingeniería Química e Industrias Extractivas</span>
+      <span class="text-xl md:text-2xl mt-2">Maestro: <b>M. en C. Hipólito Ruiz Martinez</b></span>
+      <span class="font-bold tracking-widest text-xl md:text-2xl mt-4 text-yellow-300 drop-shadow">ORGULLOSAMENTE POLITÉCNICO</span>
+    </div>
+    <!-- Columna Derecha: Créditos -->
+    <div class="flex flex-col items-center md:items-end w-full md:w-1/4 mt-6 md:mt-0 text-lg md:text-xl">
+      <span>Trabajo realizado por:</span>
+      <span class="font-semibold">Alan Sigüenza Durán</span>
+      <span class="mt-4">Desarrollado por:</span>
+      <span class="font-semibold">Diego Ávila Sigüenza</span>
+    </div>
+  </div>
+</footer>
+</body>
+
+
+</html>

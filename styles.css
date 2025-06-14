@@ -1,0 +1,180 @@
+html {
+    font-size: 10px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #ffff;
+    font-family: 'Oswald', Arial, Helvetica, sans-serif;
+}
+
+/* Header styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    gap: 2rem;
+    
+    background-color: #8C213F;
+}
+
+.header__ipn-logo,
+.header__esique-logo {
+    max-width: 120px;
+    height: auto;
+    background-color: transparent;
+    object-fit: contain;
+   
+}
+
+.header__esique-logo {
+    max-height: 134px;
+}
+.header__title{
+    font-family: 'Oswald', Arial, Helvetica, sans-serif;
+    color: #fff;
+    font-size: 3rem;
+    letter-spacing: 0.1em;
+    text-transform: capitalize;
+}
+
+/* Main styles */
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-transform: capitalize;
+    text-align: center;
+    padding: 4rem 2rem;
+    min-height: 60vh;
+    background: #8C213F;
+    color: #ffff;
+    margin: 2rem auto;
+    border-radius: 1rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    max-width: 900px;
+}
+main iframe{
+    width: 100%;
+    height: 250px;
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+.topic-title {
+            cursor: pointer; /* Cambia el cursor a una mano al pasar por encima */
+            user-select: none; /* Evita que el texto se seleccione al hacer doble clic */
+            padding: 10px 0; /* Un poco de espacio alrededor del título */
+            font-size: 1.5em; /* Un poco más grande para el título */
+            color: #333; /* Color oscuro para el título */
+            transition: color 0.3s ease; /* Transición suave para el cambio de color */
+        }
+        .topic-title:hover {
+            color: #007bff; /* Un color diferente al pasar el ratón (puedes cambiarlo) */
+        }
+        /* Clase para el contenedor de cada tema para un mejor manejo visual */
+        .topic-item {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px; /* Esquinas redondeadas */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px; /* Ancho máximo para el contenedor del tema */
+            width: 100%; /* Asegura que ocupe todo el ancho disponible */
+            box-sizing: border-box; /* Incluye padding y border en el ancho */
+        }
+        /* Estilos responsivos para el iframe (mantiene la relación de aspecto) */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* Relación de aspecto 16:9 (altura / ancho * 100) */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border-radius: 8px; /* Esquinas redondeadas para el contenedor del video */
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+/* Responsive adjustments */
+@media (max-width: 700px) {
+    .header {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+    }
+    .main {
+        padding: 2rem 1rem;
+        max-width: 100%;
+    }
+    .header__ipn-logo,
+    .header__esique-logo {
+        max-width: 80px;
+        max-height: 80px;
+    }
+}
+
+        /* Estilo para los títulos de los temas, para que se vea que son clicables */
+        .topic-title {
+            cursor: pointer; /* Cambia el cursor a una mano al pasar por encima */
+            user-select: none; /* Evita que el texto se seleccione al hacer doble clic */
+            padding: 10px 0; /* Un poco de espacio alrededor del título */
+            font-size: 1.5em; /* Un poco más grande para el título */
+            color: #333; /* Color oscuro para el título */
+            transition: color 0.3s ease; /* Transición suave para el cambio de color */
+        }
+        .topic-title:hover {
+            color: #007bff; /* Un color diferente al pasar el ratón (puedes cambiarlo) */
+        }
+        /* Clase para el contenedor de cada tema para un mejor manejo visual */
+        .topic-item {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px; /* Esquinas redondeadas */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px; /* Ancho máximo para el contenedor del tema */
+            width: 100%; /* Asegura que ocupe todo el ancho disponible */
+            box-sizing: border-box; /* Incluye padding y border en el ancho */
+        }
+        /* Estilos responsivos para el iframe (mantiene la relación de aspecto) */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* Relación de aspecto 16:9 (altura / ancho * 100) */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border-radius: 8px; /* Esquinas redondeadas para el contenedor del video */
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Asegurarse de que el main esté centrado y tenga un buen espaciado */
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    

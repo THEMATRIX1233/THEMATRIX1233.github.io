@@ -1,629 +1,1641 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Wiki de Diego & Brito - JS Espacial</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GUÍA MEGA COMPLETA – Robot Micromouse STM32</title>
+<style>
+:root {
+  --rojo: #e63946;
+  --azul: #1d3557;
+  --azul-light: #457b9d;
+  --verde: #2d6a4f;
+  --verde-light: #52b788;
+  --amarillo: #f4a261;
+  --naranja: #e76f51;
+  --gris-oscuro: #1a1a2e;
+  --gris-claro: #f8f9fa;
+  --blanco: #ffffff;
+  --morado: #7b2d8b;
+  --cyan: #0077b6;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  background: #eef2f7;
+  color: #222;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+/* ===== PORTADA ===== */
+.portada {
+  background: linear-gradient(160deg, #0f0c29, #302b63, #24243e);
+  color: white;
+  padding: 70px 40px 50px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.portada::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 40px,
+    rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px
+  ), repeating-linear-gradient(
+    90deg, transparent, transparent 40px,
+    rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px
+  );
+}
+.portada-content { position: relative; z-index: 1; }
+.portada h1 { font-size: 3em; font-weight: 900; letter-spacing: 3px; color: #00d4ff; text-shadow: 0 0 30px rgba(0,212,255,0.5); margin-bottom: 8px; }
+.portada h2 { font-size: 1.4em; color: #ffd166; margin-bottom: 6px; }
+.portada h3 { font-size: 1em; color: #aaa; margin-bottom: 25px; font-weight: 400; }
+.badge-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 20px 0; }
+.badge { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 5px 14px; border-radius: 20px; font-size: 0.8em; backdrop-filter: blur(4px); }
+.badge.hot { background: rgba(230,57,70,0.4); border-color: #e63946; }
+.warning-portada { background: rgba(244,162,97,0.2); border: 2px solid #f4a261; border-radius: 10px; padding: 12px 20px; max-width: 600px; margin: 20px auto 0; font-size: 0.9em; color: #ffd166; }
+
+/* ===== LAYOUT ===== */
+.wrap { max-width: 1150px; margin: 0 auto; padding: 30px 20px; }
+
+/* ===== SECCIONES ===== */
+.seccion {
+  background: white;
+  border-radius: 16px;
+  padding: 35px;
+  margin: 25px 0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  border-top: 5px solid var(--azul);
+}
+.seccion.verde { border-top-color: var(--verde-light); }
+.seccion.rojo { border-top-color: var(--rojo); }
+.seccion.naranja { border-top-color: var(--naranja); }
+.seccion.morado { border-top-color: var(--morado); }
+.seccion.cyan { border-top-color: var(--cyan); }
+
+.sec-titulo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 25px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #f0f0f0;
+}
+.sec-num {
+  background: var(--azul);
+  color: white;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 1.1em;
+  flex-shrink: 0;
+}
+.seccion.verde .sec-num { background: var(--verde-light); }
+.seccion.rojo .sec-num { background: var(--rojo); }
+.seccion.naranja .sec-num { background: var(--naranja); }
+.seccion.morado .sec-num { background: var(--morado); }
+.seccion.cyan .sec-num { background: var(--cyan); }
+.sec-titulo h2 { font-size: 1.55em; color: #1a1a2e; }
+.sec-titulo .emoji { font-size: 1.6em; }
+
+/* ===== SUBSECCIONES ===== */
+.sub { margin: 22px 0; }
+.sub h3 {
+  font-size: 1.1em;
+  color: var(--azul);
+  padding: 8px 14px;
+  background: #f0f4ff;
+  border-left: 4px solid var(--azul-light);
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 12px;
+}
+.sub h4 { font-size: 1em; color: #444; margin: 12px 0 6px; font-weight: 700; }
+
+/* ===== CAJAS DE AVISO ===== */
+.aviso {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px 16px; border-radius: 10px; margin: 14px 0;
+}
+.aviso .icono { font-size: 1.5em; flex-shrink: 0; margin-top: 1px; }
+.aviso .texto { flex: 1; }
+.aviso .texto strong { display: block; margin-bottom: 3px; font-size: 1em; }
+.aviso.peligro { background: #fff0f0; border: 2px solid #e63946; }
+.aviso.peligro .icono::after { content: '🚨'; }
+.aviso.ojo { background: #fffbf0; border: 2px solid #f4a261; }
+.aviso.ojo .icono::after { content: '⚠️'; }
+.aviso.tip { background: #f0fff4; border: 2px solid #52b788; }
+.aviso.tip .icono::after { content: '💡'; }
+.aviso.info { background: #f0f7ff; border: 2px solid #457b9d; }
+.aviso.info .icono::after { content: '📌'; }
+.aviso.mecate { background: #fff8e1; border: 2px solid #ffc107; font-style: italic; }
+.aviso.mecate .icono::after { content: '🗣️'; }
+
+/* ===== TABLAS ===== */
+.tabla-wrap { overflow-x: auto; margin: 12px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { background: var(--azul); color: white; padding: 11px 13px; text-align: left; }
+tbody td { padding: 9px 13px; border-bottom: 1px solid #e8e8e8; vertical-align: top; }
+tbody tr:nth-child(even) { background: #f8f9fa; }
+tbody tr:hover { background: #e8f0ff; }
+.col-pin { font-family: 'Courier New', monospace; font-weight: bold; color: #c0392b; background: #fff5f5; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+.col-comp { font-weight: 700; color: #1a1a2e; }
+.col-dir { font-family: monospace; color: #2980b9; font-weight: bold; }
+
+/* ===== WIRE COLORS ===== */
+.w { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.w .dot { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,0.25); flex-shrink: 0; }
+.w-rojo .dot { background: #e63946; }
+.w-negro .dot { background: #222; }
+.w-azul .dot { background: #2196F3; }
+.w-verde .dot { background: #4caf50; }
+.w-amarillo .dot { background: #FFC107; border-color: #999; }
+.w-blanco .dot { background: #fff; border: 1.5px solid #aaa; }
+.w-naranja .dot { background: #ff9800; }
+.w-morado .dot { background: #9c27b0; }
+.w-gris .dot { background: #9e9e9e; }
+
+/* ===== DIAGRAMA DE CABLEADO VISUAL ===== */
+.diagrama-cable {
+  background: #0d1117;
+  color: #c9d1d9;
+  font-family: 'Courier New', monospace;
+  font-size: 12.5px;
+  line-height: 1.8;
+  padding: 25px 28px;
+  border-radius: 12px;
+  margin: 16px 0;
+  overflow-x: auto;
+  border: 1px solid #30363d;
+  white-space: pre;
+}
+.diagrama-cable .verde { color: #56d364; }
+.diagrama-cable .rojo { color: #ff7b72; }
+.diagrama-cable .azul { color: #79c0ff; }
+.diagrama-cable .amarillo { color: #e3b341; }
+.diagrama-cable .cyan { color: #39d5ff; }
+.diagrama-cable .morado { color: #d2a8ff; }
+.diagrama-cable .gris { color: #8b949e; }
+.diagrama-cable .naranja { color: #ffa657; }
+.diagrama-cable .blanco { color: #f0f6fc; }
+.diagrama-cable .titulo { color: #ffd700; font-weight: bold; }
+
+/* ===== COMPONENTE VISUAL ===== */
+.comp-visual {
+  background: #1e2233;
+  border: 2px solid #3a4466;
+  border-radius: 10px;
+  padding: 18px;
+  margin: 14px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #c9d1d9;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* ===== PASOS ===== */
+.pasos { counter-reset: paso; }
+.paso {
+  counter-increment: paso;
+  display: flex; gap: 16px; align-items: flex-start;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 16px;
+  margin: 10px 0;
+  transition: box-shadow 0.2s;
+}
+.paso:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.1); }
+.paso-num {
+  background: var(--azul);
+  color: white;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 1em;
+  flex-shrink: 0;
+}
+.paso-num::before { content: counter(paso); }
+.paso-content { flex: 1; }
+.paso-content strong { color: #1a1a2e; }
+
+/* ===== GRID ===== */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 14px 0; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 14px 0; }
+@media(max-width:750px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+/* ===== TARJETAS ===== */
+.card {
+  background: #f8f9fa;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 16px;
+}
+.card h4 { color: var(--azul); margin-bottom: 10px; font-size: 1em; }
+.card.volt-33 { border-top: 4px solid #2196F3; }
+.card.volt-6 { border-top: 4px solid #4caf50; }
+.card.volt-bat { border-top: 4px solid #e63946; }
+.card.volt-5 { border-top: 4px solid #ff9800; }
+
+/* ===== PINOUT VISUAL ===== */
+.pinout-wrapper {
+  display: grid;
+  grid-template-columns: auto 160px auto;
+  gap: 4px;
+  align-items: center;
+  margin: 20px auto;
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.chip-centro {
+  background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+  color: #00ff88;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  text-align: center;
+  padding: 15px 10px;
+  border-radius: 8px;
+  border: 2px solid #555;
+  line-height: 1.8;
+  box-shadow: 0 0 20px rgba(0,255,136,0.15);
+}
+.pines-lado { display: flex; flex-direction: column; gap: 3px; }
+.pin-fila {
+  display: flex; align-items: center; gap: 5px;
+  font-family: 'Courier New', monospace; font-size: 10.5px;
+  height: 22px;
+}
+.pines-izq .pin-fila { flex-direction: row-reverse; }
+.pn { /* pin number */
+  background: #333; color: #ccc;
+  width: 22px; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 3px; font-size: 9px; flex-shrink: 0;
+}
+.pf { /* pin function */
+  padding: 2px 6px; border-radius: 4px;
+  font-size: 10px; white-space: nowrap; font-weight: 600;
+}
+.pf-pwm { background: #fde8e8; color: #8b0000; border: 1px solid #faa; }
+.pf-i2c { background: #dbeafe; color: #1e3a8a; border: 1px solid #93c5fd; }
+.pf-enc { background: #dcfce7; color: #14532d; border: 1px solid #86efac; }
+.pf-pwr { background: #fef9c3; color: #713f12; border: 1px solid #fde047; }
+.pf-gpio { background: #f3e8ff; color: #581c87; border: 1px solid #c4b5fd; }
+.pf-swd { background: #fff0e6; color: #7c2d12; border: 1px solid #fdba74; }
+.pf-uart { background: #fce7f3; color: #831843; border: 1px solid #f9a8d4; }
+.pf-nc { background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; }
+.linea-pin { width: 20px; height: 2px; background: #888; flex-shrink: 0; }
+
+/* ===== CHECKLIST ===== */
+.check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width:700px) { .check-grid { grid-template-columns: 1fr; } }
+.check-group { background: #f8f9fa; border-radius: 10px; padding: 16px; border: 1px solid #e0e0e0; }
+.check-group h4 { margin-bottom: 10px; color: #1a1a2e; font-size: 1em; }
+.check-item { display: flex; align-items: flex-start; gap: 10px; padding: 5px 0; border-bottom: 1px solid #eee; font-size: 13px; }
+.check-item:last-child { border-bottom: none; }
+.check-box { width: 18px; height: 18px; border: 2px solid #aaa; border-radius: 4px; flex-shrink: 0; margin-top: 1px; }
+
+/* ===== TROUBLESHOOT ===== */
+.trouble-item {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+.trouble-problema {
+  background: #fde8e8;
+  padding: 11px 16px;
+  font-weight: 700;
+  color: #7b1414;
+  display: flex; align-items: center; gap: 8px;
+}
+.trouble-causa {
+  background: #fff9e6;
+  padding: 9px 16px;
+  color: #7a5c00;
+  font-size: 13px;
+}
+.trouble-solucion {
+  background: #f0fff4;
+  padding: 10px 16px;
+  color: #155724;
+  font-size: 13px;
+}
+
+/* ===== TABLA DE CONTENIDOS ===== */
+.toc {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: white;
+  border-radius: 14px;
+  padding: 28px 32px;
+  margin: 25px 0;
+}
+.toc h2 { color: #00d4ff; margin-bottom: 18px; font-size: 1.3em; }
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+@media(max-width:600px) { .toc-grid { grid-template-columns: 1fr; } }
+.toc-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 10px; border-radius: 7px;
+  color: #c9d1d9; font-size: 13px;
+  transition: background 0.2s;
+}
+.toc-item:hover { background: rgba(255,255,255,0.08); }
+.toc-num {
+  background: rgba(0,212,255,0.2);
+  color: #00d4ff;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+
+/* ===== POWER DIAGRAM ===== */
+.power-flow {
+  display: flex; align-items: center; justify-content: center;
+  flex-wrap: wrap; gap: 5px; margin: 20px 0; font-size: 13px;
+}
+.pf-box {
+  background: #1a1a2e; color: white;
+  border: 2px solid #444; border-radius: 8px;
+  padding: 12px 16px; text-align: center; min-width: 100px;
+}
+.pf-box.bat { border-color: #e63946; }
+.pf-box.buck { border-color: #2196F3; }
+.pf-box.boost { border-color: #4caf50; }
+.pf-box.usb { border-color: #ff9800; }
+.pf-arrow { font-size: 1.4em; color: #666; }
+.pf-box h4 { font-size: 0.85em; color: #aaa; margin-bottom: 4px; }
+.pf-box .volt { font-size: 1.3em; font-weight: 900; }
+.pf-box.bat .volt { color: #e63946; }
+.pf-box.buck .volt { color: #79c0ff; }
+.pf-box.boost .volt { color: #56d364; }
+
+/* ===== COMPONENTE CARD ===== */
+.comp-card {
+  display: flex; gap: 15px; align-items: flex-start;
+  background: #f8f9fa; border: 1.5px solid #ddd;
+  border-radius: 10px; padding: 14px; margin: 8px 0;
+}
+.comp-card-icon { font-size: 2em; flex-shrink: 0; width: 50px; text-align: center; }
+.comp-card-info h4 { color: #1a1a2e; margin-bottom: 4px; }
+.comp-card-info p { font-size: 12.5px; color: #555; }
+.comp-card-info .tag { display: inline-block; background: #1d3557; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-right: 5px; margin-top: 3px; }
+
+footer { text-align: center; padding: 40px 20px; color: #888; font-size: 12px; background: #1a1a2e; color: #555; margin-top: 40px; }
+footer span { color: #00d4ff; }
+
+.highlight { background: #ffec99; padding: 1px 5px; border-radius: 3px; font-weight: 700; }
+code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px; color: #c0392b; }
+
+.divider { height: 1px; background: linear-gradient(90deg, transparent, #ddd, transparent); margin: 20px 0; }
+
+.resumen-final {
+  background: linear-gradient(135deg, #0f0c29, #302b63);
+  color: white;
+  border-radius: 16px;
+  padding: 35px;
+  margin: 25px 0;
+}
+.resumen-final h2 { color: #00d4ff; margin-bottom: 20px; font-size: 1.4em; }
+</style>
 </head>
 <body>
-  <!-- Fondo espacial -->
-  <div id="stars"></div>
-  <div id="stars2"></div>
-  <div id="stars3"></div>
 
-  <!-- Hero -->
-  <section id="intro" class="hero">
-    <div class="container">
-      <h1 >Wiki JS</h1>
-      <p>Por Diego & Brito - Viaje por el universo de JavaScript</p>
-      <div class="planet">
-        <i class="fas fa-globe-americas"></i>
+<!-- ═══════════════════════════════════ PORTADA ═══════════════════════════════════ -->
+<div class="portada">
+  <div class="portada-content">
+    <div style="font-size:0.8em;color:#888;letter-spacing:3px;margin-bottom:10px;">GUÍA TÉCNICA COMPLETA v2.0</div>
+    <h1>🤖 MICROMOUSE</h1>
+    <h2>Manual de Conexiones – STM32F401CCU6</h2>
+    <h3>Para armar el sistema desde cero, sin perderse en el camino</h3>
+    <div class="badge-row">
+      <span class="badge hot">⚡ STM32F401CCU6</span>
+      <span class="badge">🔭 VL53L0X × 4</span>
+      <span class="badge">🔄 MPU6050</span>
+      <span class="badge">⚙️ DRV8833 × 2</span>
+      <span class="badge">🔩 GA12-N20 × 2</span>
+      <span class="badge">🧠 MATLAB Simulink</span>
+      <span class="badge">🔋 LiPo 3.7V</span>
+    </div>
+    <div class="warning-portada">
+      🗣️ <strong>Oye escucha:</strong> Lee este manual de principio a fin ANTES de conectar cualquier cable.
+      Un error en la alimentación puede dañar todo el sistema en milisegundos. 
+      No hay undo en el hardware, así que checa dos veces antes de encender.
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════ TABLA DE CONTENIDOS ═══════════════════════ -->
+<div class="toc">
+  <h2>📋 ¿Qué viene en este manual?</h2>
+  <div class="toc-grid">
+    <div class="toc-item"><span class="toc-num">1</span> Lista de componentes completa</div>
+    <div class="toc-item"><span class="toc-num">2</span> Cómo funciona el sistema (arquitectura)</div>
+    <div class="toc-item"><span class="toc-num">3</span> Sistema de alimentación – lo primero</div>
+    <div class="toc-item"><span class="toc-num">4</span> Pinout completo del STM32F401CCU6</div>
+    <div class="toc-item"><span class="toc-num">5</span> Sensores VL53L0X × 4 (I2C + XSHUT)</div>
+    <div class="toc-item"><span class="toc-num">6</span> IMU MPU6050 (Giroscopio)</div>
+    <div class="toc-item"><span class="toc-num">7</span> Driver DRV8833 × 2 (motores)</div>
+    <div class="toc-item"><span class="toc-num">8</span> Motores GA12-N20 + encoders</div>
+    <div class="toc-item"><span class="toc-num">9</span> Botón de modo GPIOB</div>
+    <div class="toc-item"><span class="toc-num">10</span> Programación ST-Link SWD</div>
+    <div class="toc-item"><span class="toc-num">11</span> Diagrama global del sistema</div>
+    <div class="toc-item"><span class="toc-num">12</span> Checklist antes de encender</div>
+    <div class="toc-item"><span class="toc-num">13</span> Problemas comunes y soluciones</div>
+    <div class="toc-item"><span class="toc-num">14</span> Configuración STM32CubeMX</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECCIÓN 1: COMPONENTES ═══════════════════════ -->
+<div class="seccion verde">
+  <div class="sec-titulo">
+    <div class="sec-num">1</div>
+    <span class="emoji">🧰</span>
+    <h2>Lista de Componentes – Todo lo que necesitas</h2>
+  </div>
+
+  <div class="aviso mecate">
+    <div class="icono"></div>
+    <div class="texto">
+      <strong>Antes de arrancar:</strong>
+      Consigue TODOS los componentes primero. No hay nada más frustrante que armar la mitad del sistema y descubrir que te falta un cable. Aquí la lista completa.
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>🔌 Componentes Electrónicos</h3>
+    <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Componente</th><th>Cant.</th><th>Función en el robot</th><th>Voltaje</th><th>Corriente máx.</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="col-comp">STM32F401CCU6 (BlackPill)</td><td>1</td><td>Cerebro del robot – ejecuta el código Simulink</td><td>3.3V</td><td>150mA lógica</td></tr>
+        <tr><td>2</td><td class="col-comp">VL53L0X (módulo con breakout)</td><td>4</td><td>Mide distancia a las paredes del laberinto (laser ToF)</td><td>3.3V</td><td>20mA c/u</td></tr>
+        <tr><td>3</td><td class="col-comp">MPU6050 (módulo con breakout)</td><td>1</td><td>Giroscopio – mide ángulo de giro del robot</td><td>3.3V</td><td>10mA</td></tr>
+        <tr><td>4</td><td class="col-comp">DRV8833 (módulo o chip)</td><td>2</td><td>Driver que controla velocidad/dirección de motores</td><td>VM=6V, VCC=3.3V</td><td>2A por motor</td></tr>
+        <tr><td>5</td><td class="col-comp">Motor GA12-N20 300RPM 6V + encoder</td><td>2</td><td>Motores de tracción izquierdo y derecho</td><td>6V</td><td>300mA sin carga</td></tr>
+        <tr><td>6</td><td class="col-comp">Batería LiPo 3.7V 500mAh</td><td>1</td><td>Fuente de energía principal del robot</td><td>3.7–4.2V</td><td>–</td></tr>
+        <tr><td>7</td><td class="col-comp">Regulador Buck MP1584EN</td><td>1</td><td>Baja el voltaje de la batería a 3.3V para el STM32</td><td>Vin=4-28V → Vout=3.3V</td><td>3A</td></tr>
+        <tr><td>8</td><td class="col-comp">Regulador Boost XL6009</td><td>1</td><td>Sube el voltaje de batería a 6V para los motores</td><td>Vin=3V → Vout=6V</td><td>4A</td></tr>
+        <tr><td>9</td><td class="col-comp">Boost USB-C MT3608</td><td>1</td><td>Convierte USB 5V para cargar/alimentar</td><td>Vin=2-24V → 5V</td><td>2A</td></tr>
+        <tr><td>10</td><td class="col-comp">Pulsador táctil (4 pines)</td><td>1</td><td>Selecciona modo exploración o fast-run</td><td>3.3V lógica</td><td>–</td></tr>
+        <tr><td>11</td><td class="col-comp">Resistor 10kΩ (1/4W)</td><td>4</td><td>Pull-ups I2C (×2) y pull-up botón + spare</td><td>–</td><td>–</td></tr>
+        <tr><td>12</td><td class="col-comp">Condensador cerámico 100nF</td><td>8</td><td>Desacoplo de alimentación cerca de cada chip</td><td>–</td><td>–</td></tr>
+        <tr><td>13</td><td class="col-comp">Condensador electrolítico 10µF</td><td>3</td><td>Filtro en salida de reguladores</td><td>≥10V</td><td>–</td></tr>
+        <tr><td>14</td><td class="col-comp">Interruptor ON/OFF</td><td>1</td><td>Encender/apagar todo el robot</td><td>–</td><td>–</td></tr>
+        <tr><td>15</td><td class="col-comp">ST-Link V2 (programador)</td><td>1</td><td>Para grabar el firmware al STM32</td><td>–</td><td>–</td></tr>
+        <tr><td>16</td><td class="col-comp">Cables Dupont M-H y H-H</td><td>40+</td><td>Conexiones entre componentes</td><td>–</td><td>–</td></tr>
+        <tr><td>17</td><td class="col-comp">Protoboard 830 puntos</td><td>1</td><td>Para el prototipo sin soldar</td><td>–</td><td>–</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>🛠️ Herramientas necesarias</h3>
+    <div class="grid2">
+      <div>
+        <div class="comp-card"><div class="comp-card-icon">📏</div><div class="comp-card-info"><h4>Multímetro digital</h4><p>Para medir voltajes, verificar conexiones y continuidad. Indispensable. Si no tienes uno, consíguelo antes de empezar.</p><span class="tag">Esencial</span></div></div>
+        <div class="comp-card"><div class="comp-card-icon">💻</div><div class="comp-card-info"><h4>PC con MATLAB + STM32 Embedded Coder</h4><p>Para generar y grabar el código Simulink al STM32.</p><span class="tag">Esencial</span></div></div>
+        <div class="comp-card"><div class="comp-card-icon">🔧</div><div class="comp-card-info"><h4>Desarmador de punta muy fina</h4><p>Para ajustar el potenciómetro de los reguladores de voltaje.</p><span class="tag">Esencial</span></div></div>
+      </div>
+      <div>
+        <div class="comp-card"><div class="comp-card-icon">🔥</div><div class="comp-card-info"><h4>Soldador (si usas PCB)</h4><p>Para prototipo en protoboard no lo necesitas. Sí para PCB final.</p><span class="tag">Opcional en protoboard</span></div></div>
+        <div class="comp-card"><div class="comp-card-icon">🔍</div><div class="comp-card-info"><h4>Lupa o lente de aumento</h4><p>Los chips son muy pequeños. Una lupa ayuda a verificar conexiones.</p><span class="tag">Muy útil</span></div></div>
+        <div class="comp-card"><div class="comp-card-icon">📱</div><div class="comp-card-info"><h4>App de I2C scanner (opcional)</h4><p>Para verificar que los sensores responden en las direcciones correctas.</p><span class="tag">Debug</span></div></div>
       </div>
     </div>
-  </section>
+  </div>
+</div>
 
-  <!-- Menú de navegación con buscador -->
-  <nav id="navbar">
-    <div class="nav-container">
-      <div class="logo">
-        <i class="fas fa-meteor"></i>
-        <h2>Wiki DB</h2>
+<!-- ═══════════════════════ SECCIÓN 2: ARQUITECTURA ═══════════════════════ -->
+<div class="seccion cyan">
+  <div class="sec-titulo">
+    <div class="sec-num">2</div>
+    <span class="emoji">🗺️</span>
+    <h2>Arquitectura del Sistema – El panorama completo</h2>
+  </div>
+
+  <div class="aviso mecate">
+    <div class="icono"></div>
+    <div class="texto">
+      <strong>Entiéndelo antes de conectar:</strong>
+      Antes de tocar un solo cable, entiende cómo se conectan todas las partes. Es como leer el mapa antes de manejar. El robot tiene 5 subsistemas: alimentación, sensores, procesamiento, control y actuadores.
+    </div>
+  </div>
+
+  <div class="diagrama-cable"><span class="titulo">╔══════════════════════════════════════════════════════════════════════════════════╗
+║                    ARQUITECTURA DEL ROBOT MICROMOUSE                           ║
+╚══════════════════════════════════════════════════════════════════════════════════╝</span>
+
+<span class="amarillo">━━━━━━━━━━━━━━━━━━━━ SUBSISTEMA DE ALIMENTACIÓN ━━━━━━━━━━━━━━━━━━━━━━</span>
+
+ <span class="rojo">┌─────────────┐</span>   Switch     <span class="verde">┌─────────────────┐</span>
+ <span class="rojo">│  LiPo 3.7V  │</span>──────────────<span class="verde">│  MP1584EN Buck  │</span>──── <span class="azul">3.3V</span> ───► STM32, VL53L0X ×4, MPU6050, DRV8833(VCC)
+ <span class="rojo">│  500 mAh    │</span>    ON/OFF    <span class="verde">│  (ajustar 3.3V) │</span>
+ <span class="rojo">└─────────────┘</span>              <span class="verde">└─────────────────┘</span>
+        │
+        └────────────────────────<span class="verde">┌─────────────────┐</span>
+                                 <span class="verde">│  XL6009 Boost   │</span>──── <span class="verde">6.0V</span> ───► DRV8833(VM) → Motores
+                                 <span class="verde">│  (ajustar 6V)   │</span>
+                                 <span class="verde">└─────────────────┘</span>
+        │
+        └──── <span class="gris">GND</span> ───────────────────────────────────────── GND de TODO
+
+<span class="amarillo">━━━━━━━━━━━━━━━━━━━━ SUBSISTEMA DE SENSADO ━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+ <span class="cyan">VL53L0X-IZQ</span>  (addr 0x30) ─┐
+ <span class="cyan">VL53L0X-CENTRO</span>(addr 0x31) ─┤──► <span class="azul">I2C1: PB8(SCL), PB9(SDA)</span> ──► STM32F401
+ <span class="cyan">VL53L0X-DER</span>  (addr 0x29) ─┘    XSHUT: PB12, PB13, PB14
+
+ <span class="cyan">VL53L0X-TRASERO</span>(addr 0x29) ──► <span class="azul">I2C2: PB10(SCL), PB3(SDA)</span> ──► STM32F401
+ <span class="morado">MPU6050</span>       (addr 0x68) ──► <span class="azul">I2C2: PB10(SCL), PB3(SDA)</span> ──► STM32F401
+
+<span class="amarillo">━━━━━━━━━━━━━━━━━━━━ SUBSISTEMA DE PROCESAMIENTO ━━━━━━━━━━━━━━━━━━━━</span>
+
+                    <span class="azul">┌──────────────────────────────────────┐</span>
+                    <span class="azul">│         STM32F401CCU6 BlackPill       │</span>
+  Botón (PB0) ────► <span class="azul">│  ┌─────────────────────────────────┐   │</span>
+                    <span class="azul">│  │  MODO_EXPLORACION o FAST_RUN    │   │</span>
+  VL53L0X × 4 ───► <span class="azul">│  │  Mapa_Paredes (memoria)         │   │</span>
+  MPU6050 ────────► <span class="azul">│  │  Red_Neuronal_IA → ángulo       │   │</span>
+                    <span class="azul">│  │  Control_PID → velocidades      │   │</span>
+                    <span class="azul">│  └─────────────────────────────────┘   │</span>
+                    <span class="azul">└──────────────────────────────────────┘</span>
+                              │                │
+                  vel_motor_izq             vel_motor_der
+
+<span class="amarillo">━━━━━━━━━━━━━━━━━━━━ SUBSISTEMA DE ACTUACIÓN ━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+ STM32 PA8 (PWM) ──► <span class="naranja">DRV8833 #1</span> AIN1 ──► AOUT1 ──► Motor Izq (+)
+ STM32 PA9 (DIR) ──► <span class="naranja">DRV8833 #1</span> AIN2 ──► AOUT2 ──► Motor Izq (–)
+                     <span class="naranja">DRV8833 #1</span> VM ◄── 6V (XL6009)
+
+ STM32 PA10(PWM) ──► <span class="naranja">DRV8833 #2</span> AIN1 ──► AOUT1 ──► Motor Der (+)
+ STM32 PA11(DIR) ──► <span class="naranja">DRV8833 #2</span> AIN2 ──► AOUT2 ──► Motor Der (–)
+                     <span class="naranja">DRV8833 #2</span> VM ◄── 6V (XL6009)
+
+ Motor Izq Encoder A ──► STM32 PA6 (TIM3_CH1) ─┐  retroalimentación
+ Motor Izq Encoder B ──► STM32 PA7 (TIM3_CH2) ─┘  de velocidad
+ Motor Der Encoder A ──► STM32 PB6 (TIM4_CH1) ─┐
+ Motor Der Encoder B ──► STM32 PB7 (TIM4_CH2) ─┘</div>
+</div>
+
+<!-- ═══════════════════════ SECCIÓN 3: ALIMENTACIÓN ═══════════════════════ -->
+<div class="seccion rojo">
+  <div class="sec-titulo">
+    <div class="sec-num">3</div>
+    <span class="emoji">⚡</span>
+    <h2>Sistema de Alimentación – Empieza por aquí</h2>
+  </div>
+
+  <div class="aviso peligro">
+    <div class="icono"></div>
+    <div class="texto">
+      <strong>🚨 ESTO ES LO MÁS CRÍTICO DE TODO EL PROYECTO</strong>
+      Un voltaje incorrecto destruye los chips en segundos. Los sensores VL53L0X y el STM32 <strong>NO toleran más de 3.6V</strong>. 
+      Si conectas 5V o batería directa (4.2V) a estos pines, se dañan permanentemente. Sin vuelta atrás.
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>⚡ Las 3 líneas de voltaje del sistema</h3>
+    <div class="grid3">
+      <div class="card volt-bat">
+        <h4>🔋 Batería LiPo</h4>
+        <div style="font-size:2em;font-weight:900;color:#e63946;text-align:center;">3.7V–4.2V</div>
+        <p style="font-size:12px;margin-top:6px;color:#555;">Fuente principal. Varía según carga. <strong>NUNCA conectar directamente</strong> a sensores ni STM32.</p>
+        <div style="margin-top:8px;font-size:11px;color:#888;">Alimenta: Reguladores (Buck y Boost)</div>
       </div>
-      <ul class="nav-links">
-        <li><a href="#intro"><i class="fas fa-home"></i> Inicio</a></li>
-        <li><a href="#sintaxis"><i class="fas fa-code"></i> Sintaxis</a></li>
-        <li><a href="#estructuras"><i class="fas fa-project-diagram"></i> Estructuras</a></li>
-        <li><a href="#tipos"><i class="fas fa-database"></i> Tipos</a></li>
-        <li><a href="#operadores"><i class="fas fa-calculator"></i> Operadores</a></li>
-        <li><a href="#funciones"><i class="fas fa-function"></i> Funciones</a></li>
-        <li><a href="#objetos"><i class="fas fa-object-group"></i> Objetos</a></li>
-        <li><a href="#arrays"><i class="fas fa-list"></i> Arrays</a></li>
-        <li><a href="#strings"><i class="fas fa-quote-right"></i> Strings</a></li>
-        <li><a href="#dom"><i class="fas fa-code-branch"></i> DOM</a></li>
-        <li><a href="#eventos"><i class="fas fa-bolt"></i> Eventos</a></li>
-        <li><a href="#asincronia"><i class="fas fa-infinity"></i> Async</a></li>
-        <li><a href="#modulos"><i class="fas fa-layer-group"></i> Módulos</a></li>
-        <li><a href="#metodos"><i class="fas fa-cogs"></i> Métodos</a></li>
-        <li><a href="#patrones"><i class="fas fa-shapes"></i> Patrones</a></li>
-        <li><a href="#avanzado"><i class="fas fa-rocket"></i> JS Avanzado</a></li>
-        <li><a href="#frameworks"><i class="fas fa-cubes"></i> Frameworks</a></li>
-        <li><a href="#buenas-practicas"><i class="fas fa-check-circle"></i> Prácticas</a></li>
-      </ul>
-      <!-- Barra de búsqueda dentro de la navbar -->
-      <div class="search-bar navbar-search">
-        <i class="fas fa-search"></i>
-        <input type="text" id="search-input" placeholder="Buscar...">
+      <div class="card volt-33">
+        <h4>🔵 MP1584EN → 3.3V</h4>
+        <div style="font-size:2em;font-weight:900;color:#2196F3;text-align:center;">3.30V</div>
+        <p style="font-size:12px;margin-top:6px;color:#555;">Rail de lógica. Estable y regulado. Ajusta con el potenciómetro del módulo.</p>
+        <div style="margin-top:8px;font-size:11px;color:#888;">Alimenta: STM32, VL53L0X ×4, MPU6050, DRV8833 VCC</div>
+      </div>
+      <div class="card volt-6">
+        <h4>🟢 XL6009 → 6.0V</h4>
+        <div style="font-size:2em;font-weight:900;color:#4caf50;text-align:center;">6.00V</div>
+        <p style="font-size:12px;margin-top:6px;color:#555;">Rail de potencia para motores. Los GA12-N20 trabajan a 6V nominales.</p>
+        <div style="margin-top:8px;font-size:11px;color:#888;">Alimenta: DRV8833 VM → Motores GA12-N20</div>
       </div>
     </div>
-  </nav>
+  </div>
 
-  <!-- Contenido -->
-  <main class="container" id="wiki-content">
-    <!-- Sintaxis -->
-    <section id="sintaxis" class="card">
-      <h2><i class="fas fa-code"></i> Sintaxis Básica</h2>
-      <p>JavaScript es sensible a mayúsculas/minúsculas, usa punto y coma opcional, y permite declaración de variables con <code>let</code>, <code>const</code> y <code>var</code>.</p>
-      <div class="example-box">
-        <h4>📝 Explicación:</h4>
-        <p>Los comentarios son útiles para documentar tu código. No se ejecutan.</p>
-        <h4>🚀 Ejemplo interactivo:</h4>
-        <pre class="line-numbers language-js"><code>// Comentarios
-// de una línea
-/* de
-múltiples
-líneas */
+  <div class="sub">
+    <h3>📐 Diagrama visual de alimentación</h3>
+    <div class="diagrama-cable"><span class="titulo">DIAGRAMA DE ALIMENTACIÓN COMPLETO</span>
+<span class="gris">──────────────────────────────────────────────────────────────────────</span>
 
-// Declaración de variables
-var nombre = "Juan"; // Antigua forma, evita usarla
-let apellido = "Pérez"; // Variable reasignable
-const edad = 30; // Constante, no se puede reasignar</code></pre>
-        <button class="run-btn" onclick="runExample('sintaxis')">▶️ Ejecutar</button>
-        <div id="sintaxis-output" class="output"></div>
-      </div>
-    </section>
+  <span class="rojo">┌────────────────────┐</span>
+  <span class="rojo">│   BATERÍA LiPo     │</span>
+  <span class="rojo">│   3.7V / 500mAh    │</span>
+  <span class="rojo">│  [+]         [–]   │</span>
+  <span class="rojo">└──┬─────────────┬───┘</span>
+     │             │
+     │<span class="rojo">╔════════╗</span>    │
+     │<span class="rojo">║SWITCH  ║</span>    │
+     │<span class="rojo">║ON/OFF  ║</span>    │
+     │<span class="rojo">╚════╤═══╝</span>    │
+     │     │          │
+     └─────┤          │ (GND directo, sin switch)
+           │          │
+    ┌──────┤          │
+    │      │          │
+    │  <span class="azul">┌───┴───────────────────┐</span>         <span class="azul">Salida 3.3V</span>
+    │  <span class="azul">│    MP1584EN (BUCK)     ├───────────────────────────────────────────┐</span>
+    │  <span class="azul">│  VIN+ ─── VOUT+        │</span>                                         │
+    │  <span class="azul">│  [Ajustar a 3.3V]      │</span>                                         │
+    │  <span class="azul">│  Potenciómetro →  CW   │</span>  Gira a la derecha = sube voltaje         │
+    │  <span class="azul">└───────────────────────┘</span>                                         │
+    │                                                                    │
+    │  <span class="verde">┌───────────────────────┐</span>         <span class="verde">Salida 6.0V</span>                       │
+    │  <span class="verde">│    XL6009 (BOOST)      ├─────────────────────────────────────┐    │</span>
+    │  <span class="verde">│  VIN+ ─── VOUT+        │</span>                                    │    │
+    │  <span class="verde">│  [Ajustar a 6.0V]      │</span>                                    │    │
+    │  <span class="verde">│  Potenciómetro →  CCW  │</span>  Gira a la izquierda = sube voltaje │    │
+    │  <span class="verde">└───────────────────────┘</span>                                    │    │
+    │                                                                 │    │
+    │<span class="gris">══════════════════ DESTINOS 3.3V ════════════════════════════════│════╝</span>
+    │                                                                 │
+    │                                    <span class="azul">3.3V ──────────────────────┘</span>
+    │                                       │
+    │                          ┌────────────┼────────────┬─────────────┐
+    │                          ▼            ▼            ▼             ▼
+    │                    <span class="azul">STM32(VDD)  VL53L0X×4  MPU6050   DRV8833×2</span>
+    │                          │            │            │   (VCC logic)
+    │                          └────────────┴────────────┴─────────────┐
+    │                                                                   │
+    │<span class="gris">══════════════════ DESTINOS 6.0V ════════════════════════════════</span>   │
+    │                                                                 │ │
+    │                                   <span class="verde">6.0V ─────────────────────┘</span> │
+    │                                      │                           │
+    │                          ┌───────────┤                           │
+    │                          ▼           ▼                           │
+    │                    <span class="verde">DRV8833#1(VM) DRV8833#2(VM)</span>                   │
+    │                          │           │                           │
+    │                          ▼           ▼                           │
+    │                   <span class="verde">Motor Izq      Motor Der</span>                        │
+    │                                                                   │
+    └──────────────────────────── <span class="gris">GND COMÚN ─────────────────────────────┘</span>
+       (conecta GND de batería → GND de Buck → GND de Boost → GND de STM32 → GND de sensores → GND de drivers)</div>
+  </div>
 
-    <!-- Estructuras de Control -->
-    <section id="estructuras" class="card">
-      <h2><i class="fas fa-project-diagram"></i> Estructuras de Control</h2>
-      <h3>Condicionales</h3>
-      <p>Se usan para tomar decisiones en el código. Ejecutan bloques de código dependiendo de si una condición es verdadera o falsa.</p>
-      <div class="example-box">
-        <h4>IF / ELSE:</h4>
-        <pre class="line-numbers language-js"><code>let edad = 18;
-if (edad >= 18) {
-  console.log("Eres mayor de edad.");
-} else {
-  console.log("Eres menor de edad.");
-}</code></pre>
-        <button class="run-btn" onclick="runExample('estructuras')">▶️ Ejecutar</button>
-        <div id="estructuras-output" class="output"></div>
-      </div>
-      <div class="example-box">
-        <h4>SWITCH:</h4>
-        <pre class="line-numbers language-js"><code>let dia = 2;
-switch (dia) {
-  case 1:
-    console.log("Lunes");
-    break;
-  case 2:
-    console.log("Martes");
-    break;
-  case 3:
-    console.log("Miércoles");
-    break;
-  default:
-    console.log("Otro día");
-}</code></pre>
-        <button class="run-btn" onclick="runExample('estructuras2')">▶️ Ejecutar</button>
-        <div id="estructuras2-output" class="output"></div>
-      </div>
-      <h3>Bucles</h3>
-      <p>Permiten repetir un bloque de código varias veces. Muy útiles para iterar colecciones.</p>
-      <div class="example-box">
-        <h4>FOR:</h4>
-        <pre class="line-numbers language-js"><code>for (let i = 0; i < 3; i++) { console.log(i); }</code></pre>
-        <button class="run-btn" onclick="runExample('bucles')">▶️ Ejecutar</button>
-        <div id="bucles-output" class="output"></div>
-      </div>
-      <div class="example-box">
-        <h4>WHILE:</h4>
-        <pre class="line-numbers language-js"><code>let contador = 0;
-while (contador < 3) {
-  console.log(contador);
-  contador++;
-}</code></pre>
-        <button class="run-btn" onclick="runExample('bucles2')">▶️ Ejecutar</button>
-        <div id="bucles2-output" class="output"></div>
-      </div>
-      <div class="example-box">
-        <h4>DO...WHILE:</h4>
-        <pre class="line-numbers language-js"><code>let x = 0;
-do {
-  console.log(x);
-  x++;
-} while (x < 3);</code></pre>
-        <button class="run-btn" onclick="runExample('bucles3')">▶️ Ejecutar</button>
-        <div id="bucles3-output" class="output"></div>
-      </div>
-      <div class="example-box">
-        <h4>FOR...OF (Arrays):</h4>
-        <pre class="line-numbers language-js"><code>const frutas = ["manzana", "banana", "naranja"];
-for (const fruta of frutas) {
-  console.log(fruta);
-}</code></pre>
-        <button class="run-btn" onclick="runExample('bucles4')">▶️ Ejecutar</button>
-        <div id="bucles4-output" class="output"></div>
-      </div>
-      <div class="example-box">
-        <h4>FOR...IN (Objetos):</h4>
-        <pre class="line-numbers language-js"><code>const persona = { nombre: "Ana", edad: 25 };
-for (const clave in persona) {
-  console.log(clave + ": " + persona[clave]);
-}</code></pre>
-        <button class="run-btn" onclick="runExample('bucles5')">▶️ Ejecutar</button>
-        <div id="bucles5-output" class="output"></div>
-      </div>
-    </section>
+  <div class="sub">
+    <h3>🔧 Pasos para configurar los reguladores</h3>
 
-    <!-- Tipos de Datos -->
-    <section id="tipos" class="card">
-      <h2><i class="fas fa-database"></i> Tipos de Datos</h2>
-      <p>JavaScript tiene 7 tipos primitivos y objetos. Son fundamentales para almacenar información.</p>
-      <h3>Primitivos</h3>
-      <ul>
-        <li><code>string</code>: "Hola", 'Mundo'</li>
-        <li><code>number</code>: 42, 3.14</li>
-        <li><code>boolean</code>: true, false</li>
-        <li><code>null</code>: valor intencionalmente vacío</li>
-        <li><code>undefined</code>: variable declarada sin valor</li>
-        <li><code>symbol</code>: valor único e inmutable</li>
-        <li><code>bigint</code>: números enteros grandes</li>
-      </ul>
-      <div class="example-box">
-        <h4>🧪 Simulación de tipo:</h4>
-        <pre class="line-numbers language-js"><code>let nombre = "Diego";
-let edad = 30;
-let esMayor = edad >= 18;
-let vacio = null;
-let noDefinido;
-let id = Symbol('id');
-let grande = 123456789012345678901234567890n;
-
-console.log(typeof nombre); // "string"
-console.log(typeof edad); // "number"
-console.log(typeof esMayor); // "boolean"
-console.log(typeof vacio); // "object" (es un error histórico)
-console.log(typeof noDefinido); // "undefined"
-console.log(typeof id); // "symbol"
-console.log(typeof grande); // "bigint"</code></pre>
-        <button class="run-btn" onclick="runExample('tipos')">▶️ Ejecutar</button>
-        <div id="tipos-output" class="output"></div>
-      </div>
-    </section>
-
-    <!-- Operadores -->
-    <section id="operadores" class="card">
-      <h2><i class="fas fa-calculator"></i> Operadores</h2>
-      <p>Permiten manipular datos y realizar operaciones matemáticas, lógicas o de comparación.</p>
-      <div class="example-box">
-        <h4>➕ Aritméticos:</h4>
-        <pre class="line-numbers language-js"><code>let a = 10;
-let b = 3;
-console.log(a + b); // 13
-console.log(a - b); // 7
-console.log(a * b); // 30
-console.log(a / b); // 3.333...
-console.log(a % b); // 1
-console.log(a ** b); // 1000 (potencia)</code></pre>
-        <button class="run-btn" onclick="runExample('operadores')">▶️ Ejecutar</button>
-        <div id="operadores-output" class="output"></div>
-      </div>
-      <div class="example-box">
-        <h4>⚖️ Comparación:</h4>
-        <pre class="line-numbers language-js"><code>let x = 5;
-let y = "5";
-console.log(x == y); // true (comparación débil)
-console.log(x === y); // false (comparación estricta)
-console.log(x != y); // false
-console.log(x !== y); // true</code></pre>
-        <button class="run-btn" onclick="runExample('operadores2')">▶️ Ejecutar</button>
-        <div id="operadores2-output" class="output"></div>
-      </div>
-      <div class="example-box">
-        <h4>🔌 Lógicos:</h4>
-        <pre class="line-numbers language-js"><code>let verdadero = true;
-let falso = false;
-console.log(verdadero && falso); // false
-console.log(verdadero || falso); // true
-console.log(!verdadero); // false</code></pre>
-        <button class="run-btn" onclick="runExample('operadores3')">▶️ Ejecutar</button>
-        <div id="operadores3-output" class="output"></div>
-      </div>
-    </section>
-
-    <!-- Funciones -->
-    <section id="funciones" class="card">
-      <h2><i class="fas fa-function"></i> Funciones</h2>
-      <p>Permiten encapsular bloques de código reutilizables. Son esenciales para organizar el código.</p>
-      <div class="example-box">
-        <h4>🎯 Ejemplo de función:</h4>
-        <pre class="line-numbers language-js"><code>function saludar(nombre) {
-  return `Hola, ${nombre}`;
-}
-console.log(saludar("Diego"));</code></pre>
-        <button class="run-btn" onclick="runExample('funciones')">▶️ Ejecutar</button>
-        <div id="funciones-output" class="output"></div>
-      </div>
-      <div class="example-box">
-        <h4>🔄 Función Flecha:</h4>
-        <pre class="line-numbers language-js"><code>const duplicar = (num) => num * 2;
-console.log(duplicar(5));</code></pre>
-        <button class="run-btn" onclick="runExample('funciones2')">▶️ Ejecutar</button>
-        <div id="funciones2-output" class="output"></div>
-      </div>
-      <div class="example-box">
-        <h4>📦 Función Anónima Autoejecutable:</h4>
-        <pre class="line-numbers language-js"><code>(function() {
-  console.log("¡Esto se ejecuta inmediatamente!");
-})();</code></pre>
-        <button class="run-btn" onclick="runExample('funciones3')">▶️ Ejecutar</button>
-        <div id="funciones3-output" class="output"></div>
-      </div>
-    </section>
-
-    <!-- Objetos -->
-    <section id="objetos" class="card">
-      <h2><i class="fas fa-object-group"></i> Objetos</h2>
-      <p>Almacenan colecciones de datos y funcionalidades (métodos) en pares clave-valor.</p>
-      <div class="example-box">
-        <h4>🧩 Creación:</h4>
-        <pre class="line-numbers language-js"><code>const persona = {
-  nombre: "Diego",
-  edad: 30,
-  saludar() {
-    return `Hola, soy ${this.nombre}`;
-  }
-};
-console.log(persona.saludar());</code></pre>
-        <button class="run-btn" onclick="runExample('objetos')">▶️ Ejecutar</button>
-        <div id="objetos-output" class="output"></div>
-      </div>
-      <div class="example-box">
-        <h4>🔍 Acceso a propiedades:</h4>
-        <pre class="line-numbers language-js"><code>console.log(persona.nombre); // "Diego"
-console.log(persona["edad"]); // 30
-persona.nuevoCampo = "Valor";
-console.log(persona.nuevoCampo);</code></pre>
-        <button class="run-btn" onclick="runExample('objetos2')">▶️ Ejecutar</button>
-        <div id="objetos2-output" class="output"></div>
-      </div>
-    </section>
-
-    <!-- Arrays -->
-    <section id="arrays" class="card">
-      <h2><i class="fas fa-list"></i> Arrays</h2>
-      <p>Almacenan listas de elementos. Pueden ser manipulados con métodos como <code>map</code>, <code>filter</code>, etc.</p>
-      <div class="example-box">
-        <h4>📦 Creación y uso:</h4>
-        <pre class="line-numbers language-js"><code>const frutas = ["manzana", "pera", "naranja"];
-const mayus = frutas.map(f => f.toUpperCase());
-console.log(mayus);</code></pre>
-        <button class="run-btn" onclick="runExample('arrays')">▶️ Ejecutar</button>
-        <div id="arrays-output" class="output"></div>
-      </div>
-      <div class="example-box">
-        <h4>🔧 Métodos comunes:</h4>
-        <pre class="line-numbers language-js"><code>const numeros = [1, 2, 3, 4, 5];
-numeros.push(6); // Agrega al final
-numeros.pop(); // Elimina del final
-numeros.shift(); // Elimina del inicio
-numeros.unshift(0); // Agrega al inicio
-console.log(numeros);</code></pre>
-        <button class="run-btn" onclick="runExample('arrays2')">▶️ Ejecutar</button>
-        <div id="arrays2-output" class="output"></div>
-      </div>
-    </section>
-
-    <!-- Strings -->
-    <section id="strings" class="card">
-      <h2><i class="fas fa-quote-right"></i> Strings</h2>
-      <p>Representan texto. Tienen muchos métodos útiles para manipularlos.</p>
-      <div class="example-box">
-        <h4>📝 Métodos útiles:</h4>
-        <pre class="line-numbers language-js"><code>const texto = "Hola Mundo";
-console.log(texto.toUpperCase());
-console.log(texto.includes("Mundo"));
-console.log(texto.substring(0, 4)); // "Hola"
-console.log(texto.split(" ")); // ["Hola", "Mundo"]</code></pre>
-        <button class="run-btn" onclick="runExample('strings')">▶️ Ejecutar</button>
-        <div id="strings-output" class="output"></div>
-      </div>
-    </section>
-
-    <!-- DOM -->
-    <section id="dom" class="card">
-      <h2><i class="fas fa-code-branch"></i> DOM (Document Object Model)</h2>
-      <p>Representa la estructura HTML de una página web. Permite manipularla con JavaScript.</p>
-      <div class="example-box">
-        <h4>✏️ Modificación:</h4>
-        <pre class="line-numbers language-js"><code>// Este ejemplo no se puede ejecutar aquí
-// Pero en una página real:
-// document.getElementById("titulo").textContent = "Nuevo Título";
-// document.querySelector('.clase').style.color = 'red';</code></pre>
-        <p>Este código cambia el texto de un elemento con ID "titulo".</p>
-      </div>
-    </section>
-
-    <!-- Eventos -->
-    <section id="eventos" class="card">
-      <h2><i class="fas fa-bolt"></i> Eventos</h2>
-      <p>Reaccionan a acciones del usuario como clicks, teclas, etc.</p>
-      <div class="example-box">
-        <h4>⚡ Manejo:</h4>
-        <pre class="line-numbers language-js"><code>// No se puede ejecutar aquí, pero:
-// button.addEventListener('click', () => alert('Click!'));</code></pre>
-        <p>Este código muestra un mensaje al hacer clic en un botón.</p>
-      </div>
-    </section>
-
-    <!-- Asincronía -->
-    <section id="asincronia" class="card">
-      <h2><i class="fas fa-infinity"></i> Asincronía</h2>
-      <p>Permite ejecutar tareas sin bloquear el flujo principal del programa.</p>
-      <div class="example-box">
-        <h4>⏳ Simulación de promesa:</h4>
-        <pre class="line-numbers language-js"><code>const promesa = new Promise((resolve) => {
-  setTimeout(() => resolve("¡Promesa resuelta!"), 1000);
-});
-promesa.then(console.log);</code></pre>
-        <button class="run-btn" onclick="runExample('asincronia')">▶️ Ejecutar</button>
-        <div id="asincronia-output" class="output"></div>
-      </div>
-      <div class="example-box">
-        <h4>🔄 Async/Await:</h4>
-        <pre class="line-numbers language-js"><code>async function esperar() {
-  const resultado = await promesa;
-  console.log(resultado);
-}
-esperar();</code></pre>
-        <button class="run-btn" onclick="runExample('asincronia2')">▶️ Ejecutar</button>
-        <div id="asincronia2-output" class="output"></div>
-      </div>
-    </section>
-
-    <!-- Módulos -->
-    <section id="modulos" class="card">
-      <h2><i class="fas fa-layer-group"></i> Módulos (ES6)</h2>
-      <p>Permiten organizar y reutilizar código en archivos separados.</p>
-      <div class="example-box">
-        <h4>📤 Exportar e importar (en archivos):</h4>
-        <pre class="line-numbers language-js"><code>// archivo.js
-export const nombre = 'valor';
-export function saludar() { return 'Hola'; }
-// main.js
-// import { nombre, saludar } from './archivo.js';</code></pre>
-        <p>Esto permite reutilizar código de forma limpia.</p>
-      </div>
-    </section>
-
-    <!-- Métodos y Utilidades -->
-    <section id="metodos" class="card">
-      <h2><i class="fas fa-cogs"></i> Métodos y Utilidades</h2>
-      <p>Funciones integradas para manipular tipos de datos, números, cadenas, etc.</p>
-      <div class="example-box">
-        <h4>🧰 Ejemplo común:</h4>
-        <pre class="line-numbers language-js"><code>const numeros = [1, 2, 3, 4, 5];
-const suma = numeros.reduce((a, b) => a + b, 0);
-const pares = numeros.filter(n => n % 2 === 0);
-const duplicados = numeros.map(n => n * 2);
-
-console.log("Suma:", suma);
-console.log("Pares:", pares);
-console.log("Duplicados:", duplicados);</code></pre>
-        <button class="run-btn" onclick="runExample('metodos')">▶️ Ejecutar</button>
-        <div id="metodos-output" class="output"></div>
-      </div>
-    </section>
-
-    <!-- Patrones de Diseño -->
-    <section id="patrones" class="card">
-      <h2><i class="fas fa-shapes"></i> Patrones de Diseño</h2>
-      <p>Formas probadas de estructurar código para resolver problemas comunes.</p>
-      <div class="example-box">
-        <h4>🏗️ Constructor:</h4>
-        <pre class="line-numbers language-js"><code>function Coche(marca) {
-  this.marca = marca;
-  this.arrancar = function() {
-    return `${this.marca} está en marcha`;
-  };
-}
-const miCoche = new Coche("Toyota");
-console.log(miCoche.arrancar());</code></pre>
-        <button class="run-btn" onclick="runExample('patrones')">▶️ Ejecutar</button>
-        <div id="patrones-output" class="output"></div>
-      </div>
-    </section>
-
-    <!-- JS Avanzado -->
-    <section id="avanzado" class="card">
-      <h2><i class="fas fa-rocket"></i> JavaScript Avanzado</h2>
-      <h3>Arrow Functions</h3>
-      <p>Forma más concisa de escribir funciones, con alcance léxico de <code>this</code>.</p>
-      <div class="example-box">
-        <pre class="line-numbers language-js"><code>const duplicar = x => x * 2;
-console.log(duplicar(5));</code></pre>
-        <button class="run-btn" onclick="runExample('arrow')">▶️ Ejecutar</button>
-        <div id="arrow-output" class="output"></div>
-      </div>
-
-      <h3>Destructuring</h3>
-      <p>Extrae valores de objetos o arrays en variables individuales.</p>
-      <div class="example-box">
-        <pre class="line-numbers language-js"><code>const persona = { nombre: "Ana", edad: 25 };
-const { nombre, edad } = persona;
-console.log(nombre);</code></pre>
-        <button class="run-btn" onclick="runExample('destructure')">▶️ Ejecutar</button>
-        <div id="destructure-output" class="output"></div>
-      </div>
-
-      <h3>Spread Operator</h3>
-      <p>Expande arrays u objetos en lugares donde se esperan múltiples argumentos o elementos.</p>
-      <div class="example-box">
-        <pre class="line-numbers language-js"><code>const arr1 = [1, 2, 3];
-const arr2 = [...arr1, 4, 5];
-console.log(arr2);</code></pre>
-        <button class="run-btn" onclick="runExample('spread')">▶️ Ejecutar</button>
-        <div id="spread-output" class="output"></div>
-      </div>
-
-      <h3>Clases</h3>
-      <p>Sintaxis más clara para crear objetos y manejar herencia.</p>
-      <div class="example-box">
-        <pre class="line-numbers language-js"><code>class Animal {
-  constructor(nombre) { this.nombre = nombre; }
-  hablar() { return `${this.nombre} hace ruido.`; }
-}
-const perro = new Animal("Firulais");
-console.log(perro.hablar());</code></pre>
-        <button class="run-btn" onclick="runExample('clases')">▶️ Ejecutar</button>
-        <div id="clases-output" class="output"></div>
-      </div>
-
-      <h3>Proxies</h3>
-      <p>Permiten interceptar y definir comportamiento personalizado para operaciones fundamentales.</p>
-      <div class="example-box">
-        <pre class="line-numbers language-js"><code>const handler = {
-  get: function(obj, prop) {
-    return prop in obj ? obj[prop] : `Propiedad "${prop}" no encontrada.`;
-  }
-};
-const proxy = new Proxy({a: 1}, handler);
-console.log(proxy.a); // 1
-console.log(proxy.b); // Propiedad "b" no encontrada.</code></pre>
-        <button class="run-btn" onclick="runExample('proxies')">▶️ Ejecutar</button>
-        <div id="proxies-output" class="output"></div>
-      </div>
-    </section>
-
-    <!-- Frameworks -->
-    <section id="frameworks" class="card">
-      <h2><i class="fas fa-cubes"></i> Frameworks y Bibliotecas</h2>
-      <p>Herramientas populares construidas sobre JavaScript para facilitar el desarrollo web.</p>
-
-      <h3>React</h3>
-      <p>Librería de Facebook para construir interfaces de usuario, especialmente componentes reutilizables.</p>
-      <div class="example-box">
-        <pre class="line-numbers language-jsx"><code>function App() {
-  return <h1>¡Hola desde React!</h1>;
-}</code></pre>
-      </div>
-
-      <h3>Vue.js</h3>
-      <p>Framework progresivo para construir interfaces de usuario. Fácil de integrar con proyectos existentes.</p>
-      <div class="example-box">
-        <pre class="line-numbers language-js"><code>new Vue({
-  el: '#app',
-   { message: '¡Hola desde Vue!' }
-})</code></pre>
-      </div>
-
-      <h3>Angular</h3>
-      <p>Plataforma de Google para crear aplicaciones web escalables con TypeScript.</p>
-      <div class="example-box">
-        <pre class="line-numbers language-ts"><code>@Component({
-  selector: 'app-root',
-  template: `<h1>{{title}}</h1>`
-})
-export class AppComponent {
-  title = '¡Hola desde Angular!';
-}</code></pre>
-      </div>
-
-      <h3>Node.js</h3>
-      <p>Entorno de ejecución que permite correr JavaScript en el servidor, no solo en el navegador.</p>
-      <div class="example-box">
-        <pre class="line-numbers language-js"><code>const http = require('http');
-const server = http.createServer((req, res) => {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('¡Hola desde Node.js!');
-});
-server.listen(3000);</code></pre>
-      </div>
-
-      <h3>Express</h3>
-      <p>Framework minimalista para Node.js para construir APIs y servidores web.</p>
-      <div class="example-box">
-        <pre class="line-numbers language-js"><code>const express = require('express');
-const app = express();
-app.get('/', (req, res) => {
-  res.send('¡Hola desde Express!');
-});
-app.listen(3000);</code></pre>
-      </div>
-
-      <h3>Next.js</h3>
-      <p>Framework de React para aplicaciones full-stack, con renderizado del lado del servidor (SSR).</p>
-      <div class="example-box">
-        <pre class="line-numbers language-jsx"><code>export default function Home() {
-  return <h1>¡Hola desde Next.js!</h1>;
-}</code></pre>
-      </div>
-
-      <h3>Svelte</h3>
-      <p>Framework que compila componentes en JavaScript vanilla altamente eficiente.</p>
-      <div class="example-box">
-        <pre class="line-numbers language-svelte"><code><script>
-  let name = 'Svelte';
-</script>
-
-<h1>¡Hola {name}!</h1></code></pre>
-      </div>
-
-      <h3>jQuery</h3>
-      <p>Biblioteca que simplifica manipulación del DOM, eventos, animaciones y AJAX.</p>
-      <div class="example-box">
-        <pre class="line-numbers language-js"><code>$(document).ready(function() {
-  $('button').click(function() {
-    alert('¡Hola desde jQuery!');
-  });
-});</code></pre>
-      </div>
-    </section>
-
-    <!-- Buenas Prácticas -->
-    <section id="buenas-practicas" class="card">
-      <h2><i class="fas fa-check-circle"></i> Buenas Prácticas</h2>
-      <ul>
-        <li>✅ Usa <code>const</code> y <code>let</code>, evita <code>var</code></li>
-        <li>✅ Nombra variables y funciones de forma clara y descriptiva</li>
-        <li>✅ Usa <code>===</code> y <code>!==</code> para comparaciones</li>
-        <li>✅ Maneja errores con <code>try/catch</code></li>
-        <li>✅ Escribe código limpio, mantenible y documentado</li>
-        <li>✅ Usa linters (ESLint) y formateadores (Prettier)</li>
-        <li>✅ Evita mutaciones innecesarias (inmutabilidad)</li>
-        <li>✅ Usa módulos ES6</li>
-        <li>✅ Prueba tu código (unitarias, integración)</li>
-        <li>✅ Usa <code>strict mode</code> (<code>"use strict";</code>)</li>
-      </ul>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container">
-      <p>© 2025 Wiki DB | Por Diego Avila Siguenza & Cesar Brito Leyva</p>
-      <p>📞 <a href="tel:+525538911762">55 3891 1762</a></p>
-      <p>✉️ <a href="mailto:thematrixyt71@gmail.com">thematrixyt71@gmail.com</a></p>
-      <p>📘 <a href="https://www.facebook.com/diego.avila.578872?locale=es_LA" target="_blank">Facebook</a></p>
-      <p><a href="#intro">Inicio</a></p>
-      <p><a href="https://carlosazaustre.es/ecmascript6">referencias : https://carlosazaustre.es/ecmascript6</a></p>
+    <h4>Paso 1: Configurar MP1584EN a 3.3V</h4>
+    <div class="pasos">
+      <div class="paso"><div class="paso-num"></div><div class="paso-content">Con la batería desconectada, conecta el módulo MP1584EN: <strong>VIN+ a batería(+)</strong>, <strong>GND a batería(–)</strong>. Asegúrate que el switch esté en OFF.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content">Pon el multímetro en modo <strong>VDC (Voltaje DC)</strong>. Conecta la punta roja a <strong>VOUT+</strong> y la negra a <strong>GND</strong> del regulador.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content">Enciende el switch. Mira el valor en el multímetro. Si muestra algo distinto a 3.3V, necesitas ajustar el potenciómetro.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content">Con un desarmador muy fino, gira el potenciómetro del MP1584EN <strong>despacio</strong> hasta que el multímetro marque exactamente <span class="highlight">3.30V</span>. Sentido horario sube, antihorario baja (puede variar por módulo).</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content">Verifica que el voltaje sea estable. Anota: <strong>Este rail es el más importante.</strong> Todo el sistema lógico depende de él.</div></div>
     </div>
-  </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-  <script src="script.js"></script>
+    <div class="divider"></div>
+    <h4>Paso 2: Configurar XL6009 a 6.0V</h4>
+    <div class="pasos">
+      <div class="paso"><div class="paso-num"></div><div class="paso-content">Igual que antes: conecta <strong>VIN+</strong> a la batería y <strong>GND</strong> a tierra.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content">Mide <strong>VOUT+</strong> con el multímetro en modo VDC.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content">Ajusta el potenciómetro hasta leer exactamente <span class="highlight">6.00V</span>. Los motores GA12-N20 trabajan a 6V nominales – no subas de 6.5V.</div></div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>📋 Tabla completa de conexiones de alimentación</h3>
+    <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Desde</th><th>Pin / Terminal</th><th>Hasta</th><th>Pin / Terminal</th><th>Color cable</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>Batería LiPo</td><td>+ (positivo)</td><td>Switch ON/OFF</td><td>Terminal entrada</td><td><span class="w w-rojo"><span class="dot"></span>Rojo</span></td><td>Siempre switch primero</td></tr>
+        <tr><td>Switch ON/OFF</td><td>Terminal salida</td><td>MP1584EN</td><td>VIN+</td><td><span class="w w-rojo"><span class="dot"></span>Rojo</span></td><td>–</td></tr>
+        <tr><td>Switch ON/OFF</td><td>Terminal salida</td><td>XL6009</td><td>VIN+</td><td><span class="w w-naranja"><span class="dot"></span>Naranja</span></td><td>–</td></tr>
+        <tr><td>Batería LiPo</td><td>– (negativo)</td><td>GND rail común</td><td>–</td><td><span class="w w-negro"><span class="dot"></span>Negro</span></td><td>DIRECTO, sin switch</td></tr>
+        <tr><td>MP1584EN</td><td>VOUT+ (3.3V)</td><td>STM32 BlackPill</td><td>3V3 pin</td><td><span class="w w-azul"><span class="dot"></span>Azul</span></td><td>Poner 100nF en este pin</td></tr>
+        <tr><td>MP1584EN</td><td>VOUT+ (3.3V)</td><td>VL53L0X Izq</td><td>VIN</td><td><span class="w w-azul"><span class="dot"></span>Azul</span></td><td>–</td></tr>
+        <tr><td>MP1584EN</td><td>VOUT+ (3.3V)</td><td>VL53L0X Centro</td><td>VIN</td><td><span class="w w-azul"><span class="dot"></span>Azul</span></td><td>–</td></tr>
+        <tr><td>MP1584EN</td><td>VOUT+ (3.3V)</td><td>VL53L0X Derecho</td><td>VIN</td><td><span class="w w-azul"><span class="dot"></span>Azul</span></td><td>–</td></tr>
+        <tr><td>MP1584EN</td><td>VOUT+ (3.3V)</td><td>VL53L0X Trasero</td><td>VIN</td><td><span class="w w-azul"><span class="dot"></span>Azul</span></td><td>–</td></tr>
+        <tr><td>MP1584EN</td><td>VOUT+ (3.3V)</td><td>MPU6050</td><td>VCC</td><td><span class="w w-azul"><span class="dot"></span>Azul</span></td><td>–</td></tr>
+        <tr><td>MP1584EN</td><td>VOUT+ (3.3V)</td><td>DRV8833 #1</td><td>VCC y nSLEEP</td><td><span class="w w-azul"><span class="dot"></span>Azul</span></td><td>nSLEEP = HIGH siempre</td></tr>
+        <tr><td>MP1584EN</td><td>VOUT+ (3.3V)</td><td>DRV8833 #2</td><td>VCC y nSLEEP</td><td><span class="w w-azul"><span class="dot"></span>Azul</span></td><td>nSLEEP = HIGH siempre</td></tr>
+        <tr><td>XL6009</td><td>VOUT+ (6.0V)</td><td>DRV8833 #1</td><td>VM (motor power)</td><td><span class="w w-verde"><span class="dot"></span>Verde</span></td><td>Potencia de motores</td></tr>
+        <tr><td>XL6009</td><td>VOUT+ (6.0V)</td><td>DRV8833 #2</td><td>VM (motor power)</td><td><span class="w w-verde"><span class="dot"></span>Verde</span></td><td>Potencia de motores</td></tr>
+        <tr><td>MP1584EN GND</td><td>GND</td><td>GND rail común</td><td>–</td><td><span class="w w-negro"><span class="dot"></span>Negro</span></td><td>–</td></tr>
+        <tr><td>XL6009 GND</td><td>GND</td><td>GND rail común</td><td>–</td><td><span class="w w-negro"><span class="dot"></span>Negro</span></td><td>–</td></tr>
+        <tr><td>STM32 BlackPill</td><td>GND</td><td>GND rail común</td><td>–</td><td><span class="w w-negro"><span class="dot"></span>Negro</span></td><td>Hay 2 pines GND en la BlackPill</td></tr>
+        <tr><td>VL53L0X ×4</td><td>GND (cada uno)</td><td>GND rail común</td><td>–</td><td><span class="w w-negro"><span class="dot"></span>Negro</span></td><td>4 cables negro</td></tr>
+        <tr><td>MPU6050</td><td>GND</td><td>GND rail común</td><td>–</td><td><span class="w w-negro"><span class="dot"></span>Negro</span></td><td>–</td></tr>
+        <tr><td>DRV8833 #1 y #2</td><td>GND (cada uno)</td><td>GND rail común</td><td>–</td><td><span class="w w-negro"><span class="dot"></span>Negro</span></td><td>2 cables negro</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECCIÓN 4: PINOUT STM32 ═══════════════════════ -->
+<div class="seccion">
+  <div class="sec-titulo">
+    <div class="sec-num">4</div>
+    <span class="emoji">🖥️</span>
+    <h2>Pinout del STM32F401CCU6 – Qué pin hace qué</h2>
+  </div>
+
+  <div class="aviso info">
+    <div class="icono"></div>
+    <div class="texto">
+      <strong>BlackPill STM32F401CCU6:</strong> Esta placa de desarrollo tiene todos los pines del STM32 accesibles en headers de 2.54mm. 
+      Los pines están etiquetados en la PCB (PA0, PA1... PB0, PB1...). Es mucho más fácil que soldar el chip directamente.
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>🗺️ Mapa visual de la BlackPill STM32F401CCU6</h3>
+    <div class="diagrama-cable"><span class="titulo">   BlackPill STM32F401CCU6 – Vista superior con funciones asignadas</span>
+<span class="gris">   ┌──────────────────────────────────────────────────────┐</span>
+<span class="gris">   │   ╔══╗                              [USB-C]  ╔══╗   │</span>
+<span class="gris">   │   ║B9╟──</span><span class="azul">I2C1_SDA ──► VL53L0X IZQ/CEN/DER</span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║B8╟──</span><span class="azul">I2C1_SCL ──► VL53L0X IZQ/CEN/DER</span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║B7╟──</span><span class="verde">TIM4_CH2 ◄── Encoder Derecho B   </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║B6╟──</span><span class="verde">TIM4_CH1 ◄── Encoder Derecho A   </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║B5╟──</span><span class="gris">NC                               </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║B4╟──</span><span class="gris">NC                               </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║B3╟──</span><span class="azul">I2C2_SDA ──► VL53L0X TRASERO + MPU6050</span><span class="gris">──╢  ╟ │</span>
+<span class="gris">   │   ║A15╟──</span><span class="gris">NC                               </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║A12╟──</span><span class="gris">NC (USB D+)                      </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║A11╟──</span><span class="rojo">TIM1_CH4 ──► DRV8833 #2 AIN2 (DIR)</span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║A10╟──</span><span class="rojo">TIM1_CH3 ──► DRV8833 #2 AIN1 (PWM)</span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║A9 ╟──</span><span class="rojo">TIM1_CH2 ──► DRV8833 #1 AIN2 (DIR)</span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║A8 ╟──</span><span class="rojo">TIM1_CH1 ──► DRV8833 #1 AIN1 (PWM)</span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║B15╟──</span><span class="morado">GPIO OUT ──► XSHUT VL53L0X Trasero</span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║B14╟──</span><span class="morado">GPIO OUT ──► XSHUT VL53L0X Derecho</span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║B13╟──</span><span class="morado">GPIO OUT ──► XSHUT VL53L0X Centro</span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║B12╟──</span><span class="morado">GPIO OUT ──► XSHUT VL53L0X Izquierdo</span><span class="gris">──╢  ╟ │</span>
+<span class="gris">   │   ║B10╟──</span><span class="azul">I2C2_SCL ──► VL53L0X TRASERO + MPU6050</span><span class="gris">──╢  ╟ │</span>
+<span class="gris">   │   ║B2 ╟──</span><span class="gris">NC (BOOT1)                       </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║B1 ╟──</span><span class="gris">NC                               </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║B0 ╟──</span><span class="naranja">GPIO IN ◄── BOTÓN MODO (pull-up)  </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║A7 ╟──</span><span class="verde">TIM3_CH2 ◄── Encoder Izquierdo B  </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║A6 ╟──</span><span class="verde">TIM3_CH1 ◄── Encoder Izquierdo A  </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║A5 ╟──</span><span class="gris">NC                               </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║A4 ╟──</span><span class="gris">NC                               </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║A3 ╟──</span><span class="gris">UART RX (debug opcional)         </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║A2 ╟──</span><span class="gris">UART TX (debug opcional)         </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║A1 ╟──</span><span class="gris">NC                               </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ║A0 ╟──</span><span class="gris">NC                               </span><span class="gris">──╢  ╟   │</span>
+<span class="gris">   │   ╚══╝   [3V3][GND][5V0][GND][3V3]        ╚══╝   │</span>
+<span class="gris">   └──────────────────────────────────────────────────┘</span>
+                         │  │  │  │  │
+                    <span class="azul">3.3V</span>  <span class="gris">GND</span> <span class="amarillo">5V*</span>  <span class="gris">GND</span> <span class="azul">3.3V</span>
+
+          *5V solo disponible cuando conectas USB para programar
+   <span class="rojo">──────────────────────── SWD ──────────────────────────</span>
+   <span class="rojo">PA13 ◄─► ST-Link SWDIO    PA14 ◄── ST-Link SWDCLK</span>
+   <span class="rojo">NRST ──► ST-Link NRST (opcional, para reset automático)</span></div>
+  </div>
+
+  <div class="sub">
+    <h3>📊 Tabla maestra de asignación de pines</h3>
+    <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Pin STM32</th><th>Etiqueta BlackPill</th><th>Función Simulink</th><th>Conecta a</th><th>Tipo de señal</th></tr></thead>
+      <tbody>
+        <tr><td><code>PA8</code></td><td>A8</td><td>PWM Motor Izquierdo – velocidad (vel_motor_izq)</td><td>DRV8833 #1 – AIN1</td><td>Salida PWM (TIM1_CH1)</td></tr>
+        <tr><td><code>PA9</code></td><td>A9</td><td>Dirección Motor Izquierdo</td><td>DRV8833 #1 – AIN2</td><td>Salida PWM (TIM1_CH2)</td></tr>
+        <tr><td><code>PA10</code></td><td>A10</td><td>PWM Motor Derecho – velocidad (vel_motor_der)</td><td>DRV8833 #2 – AIN1</td><td>Salida PWM (TIM1_CH3)</td></tr>
+        <tr><td><code>PA11</code></td><td>A11</td><td>Dirección Motor Derecho</td><td>DRV8833 #2 – AIN2</td><td>Salida PWM (TIM1_CH4)</td></tr>
+        <tr><td><code>PA6</code></td><td>A6</td><td>Encoder Motor Izquierdo – Canal A</td><td>Motor Izq – Encoder A (amarillo)</td><td>Entrada (TIM3_CH1)</td></tr>
+        <tr><td><code>PA7</code></td><td>A7</td><td>Encoder Motor Izquierdo – Canal B</td><td>Motor Izq – Encoder B (blanco)</td><td>Entrada (TIM3_CH2)</td></tr>
+        <tr><td><code>PB6</code></td><td>B6</td><td>Encoder Motor Derecho – Canal A</td><td>Motor Der – Encoder A (amarillo)</td><td>Entrada (TIM4_CH1)</td></tr>
+        <tr><td><code>PB7</code></td><td>B7</td><td>Encoder Motor Derecho – Canal B</td><td>Motor Der – Encoder B (blanco)</td><td>Entrada (TIM4_CH2)</td></tr>
+        <tr><td><code>PB8</code></td><td>B8</td><td>I2C1 Clock – Sensores Izq/Centro/Der</td><td>SCL: VL53L0X ×3 + pull-up 10kΩ</td><td>I2C (I2C1_SCL)</td></tr>
+        <tr><td><code>PB9</code></td><td>B9</td><td>I2C1 Data – Sensores Izq/Centro/Der</td><td>SDA: VL53L0X ×3 + pull-up 10kΩ</td><td>I2C (I2C1_SDA)</td></tr>
+        <tr><td><code>PB10</code></td><td>B10</td><td>I2C2 Clock – Sensor Trasero + MPU6050</td><td>SCL: VL53L0X Trasero + MPU6050 + pull-up 10kΩ</td><td>I2C (I2C2_SCL)</td></tr>
+        <tr><td><code>PB3</code></td><td>B3</td><td>I2C2 Data – Sensor Trasero + MPU6050</td><td>SDA: VL53L0X Trasero + MPU6050 + pull-up 10kΩ</td><td>I2C (I2C2_SDA)</td></tr>
+        <tr><td><code>PB12</code></td><td>B12</td><td>XSHUT Sensor Izquierdo</td><td>VL53L0X Izq – pin XSHUT</td><td>GPIO Salida</td></tr>
+        <tr><td><code>PB13</code></td><td>B13</td><td>XSHUT Sensor Centro</td><td>VL53L0X Centro – pin XSHUT</td><td>GPIO Salida</td></tr>
+        <tr><td><code>PB14</code></td><td>B14</td><td>XSHUT Sensor Derecho</td><td>VL53L0X Der – pin XSHUT</td><td>GPIO Salida</td></tr>
+        <tr><td><code>PB15</code></td><td>B15</td><td>XSHUT Sensor Trasero</td><td>VL53L0X Trasero – pin XSHUT</td><td>GPIO Salida</td></tr>
+        <tr><td><code>PB0</code></td><td>B0</td><td>Botón de modo (GPIOB)</td><td>Pulsador + pull-up 10kΩ a 3.3V</td><td>GPIO Entrada</td></tr>
+        <tr><td><code>PA13</code></td><td>A13</td><td>SWD Data (programación)</td><td>ST-Link – SWDIO</td><td>SWD</td></tr>
+        <tr><td><code>PA14</code></td><td>A14</td><td>SWD Clock (programación)</td><td>ST-Link – SWDCLK</td><td>SWD</td></tr>
+        <tr><td><code>3V3</code></td><td>3V3</td><td>Alimentación lógica entrada</td><td>MP1584EN VOUT+</td><td>Alimentación</td></tr>
+        <tr><td><code>GND</code></td><td>GND (×2)</td><td>Tierra</td><td>GND rail común</td><td>Alimentación</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECCIÓN 5: VL53L0X ═══════════════════════ -->
+<div class="seccion morado">
+  <div class="sec-titulo">
+    <div class="sec-num">5</div>
+    <span class="emoji">🔭</span>
+    <h2>Sensores VL53L0X × 4 – Distancia ToF</h2>
+  </div>
+
+  <div class="aviso mecate">
+    <div class="icono"></div>
+    <div class="texto">
+      <strong>El problema del I2C:</strong>
+      Todos los VL53L0X arrancan con la misma dirección I2C (0x29). Si conectas varios en el mismo bus sin cambiar sus direcciones, el microcontrolador no sabe con quién habla y todo falla. La solución es el pin XSHUT que apaga/enciende cada sensor individualmente para asignarles una dirección única.
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>📍 Pines del módulo VL53L0X (breakout board)</h3>
+    <div class="diagrama-cable"><span class="titulo">  MÓDULO VL53L0X – Vista del breakout board</span>
+
+  <span class="gris">┌─────────────────────────────────────────┐</span>
+  <span class="gris">│         [ VL53L0X MODULE ]              │</span>
+  <span class="gris">│                                         │</span>
+  <span class="gris">│  ┌──┐                                   │</span>
+  <span class="gris">│  │  │  ← Sensor láser (ventana óptica)  │</span>
+  <span class="gris">│  └──┘                                   │</span>
+  <span class="gris">│                                         │</span>
+  <span class="gris">│  VIN  ──</span><span class="azul">──────────────────────── 3.3V</span>  <span class="gris">│</span>
+  <span class="gris">│  GND  ──</span><span class="gris">──────────────────────── GND</span>   <span class="gris">│</span>
+  <span class="gris">│  SCL  ──</span><span class="cyan">──────────────────────── I2C CLK</span><span class="gris">│</span>
+  <span class="gris">│  SDA  ──</span><span class="cyan">──────────────────────── I2C DAT</span><span class="gris">│</span>
+  <span class="gris">│  XSHUT──</span><span class="morado">──────────────────────── GPIO STM32</span><span class="gris">│</span>
+  <span class="gris">│  GPIO1 ──</span><span class="gris">──────────────────────── (sin usar)</span><span class="gris">│</span>
+  <span class="gris">└─────────────────────────────────────────┘</span>
+
+  <span class="naranja">XSHUT = LOW → Sensor APAGADO (reset)</span>
+  <span class="verde">XSHUT = HIGH → Sensor ENCENDIDO y listo</span>
+  <span class="gris">Si XSHUT no tiene señal → Conectar a 3.3V (siempre encendido)</span></div>
+  </div>
+
+  <div class="sub">
+    <h3>🔄 Procedimiento para asignar direcciones I2C únicas</h3>
+    <p style="margin-bottom:12px;">Esto lo hace el <strong>firmware de Simulink automáticamente</strong> en la inicialización, pero necesitas cablear los pines XSHUT correctamente para que funcione:</p>
+
+    <div class="diagrama-cable"><span class="titulo">  SECUENCIA DE INICIALIZACIÓN DE SENSORES VL53L0X</span>
+
+  INICIO →
+
+  <span class="rojo">PASO 1: Apaga todos los sensores del bus I2C1</span>
+  STM32: PB12 = LOW  → Sensor IZQ apagado
+  STM32: PB13 = LOW  → Sensor CENTRO apagado
+  STM32: PB14 = LOW  → Sensor DER apagado
+  STM32: PB15 = LOW  → Sensor TRASERO apagado
+  <span class="gris">(En este momento no hay ningún sensor activo en ningún bus)</span>
+
+  <span class="naranja">PASO 2: Enciende SOLO el sensor izquierdo</span>
+  STM32: PB12 = HIGH → Sensor IZQ se activa
+  <span class="gris">Sensor IZQ responde en su dirección default: 0x29</span>
+  Firmware: Envía comando I2C para cambiar dirección a <span class="verde">0x30</span>
+  <span class="gris">Ahora Sensor IZQ = 0x30 (permanece así hasta reinicio)</span>
+
+  <span class="naranja">PASO 3: Enciende SOLO el sensor centro</span>
+  STM32: PB13 = HIGH → Sensor CENTRO se activa
+  <span class="gris">Sensor CENTRO responde en su dirección default: 0x29</span>
+  Firmware: Envía comando I2C para cambiar dirección a <span class="verde">0x31</span>
+  <span class="gris">Ahora Sensor CENTRO = 0x31</span>
+
+  <span class="naranja">PASO 4: Enciende el sensor derecho</span>
+  STM32: PB14 = HIGH → Sensor DER se activa
+  <span class="gris">Sensor DER responde en 0x29 (se puede dejar así, ya no hay conflicto)</span>
+  <span class="gris">Sensor DER = 0x29 (sin cambio)</span>
+
+  <span class="naranja">PASO 5: Enciende el sensor trasero (bus I2C2 independiente)</span>
+  STM32: PB15 = HIGH → Sensor TRASERO se activa
+  <span class="gris">Sensor TRASERO en bus I2C2, no hay conflicto con I2C1</span>
+  <span class="gris">Sensor TRASERO = 0x29 (sin cambio, bus diferente)</span>
+
+  FIN → Todos los sensores listos para leer distancias</div>
+  </div>
+
+  <div class="sub">
+    <h3>📊 Mapa de direcciones I2C final</h3>
+    <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Sensor</th><th>Posición</th><th>Bus I2C</th><th>SCL STM32</th><th>SDA STM32</th><th>XSHUT STM32</th><th>Dirección I2C final</th></tr></thead>
+      <tbody>
+        <tr><td>Sensor 1</td><td>Izquierdo</td><td>I2C1</td><td class="col-pin">PB8</td><td class="col-pin">PB9</td><td class="col-pin">PB12</td><td class="col-dir">0x30</td></tr>
+        <tr><td>Sensor 2</td><td>Centro</td><td>I2C1</td><td class="col-pin">PB8</td><td class="col-pin">PB9</td><td class="col-pin">PB13</td><td class="col-dir">0x31</td></tr>
+        <tr><td>Sensor 3</td><td>Derecho</td><td>I2C1</td><td class="col-pin">PB8</td><td class="col-pin">PB9</td><td class="col-pin">PB14</td><td class="col-dir">0x29</td></tr>
+        <tr><td>Sensor 4</td><td>Trasero</td><td>I2C2</td><td class="col-pin">PB10</td><td class="col-pin">PB3</td><td class="col-pin">PB15</td><td class="col-dir">0x29</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>🔌 Diagrama de cableado – Bus I2C1 (Izquierdo + Centro + Derecho)</h3>
+    <div class="diagrama-cable"><span class="titulo">  CABLEADO I2C1 – VL53L0X IZQUIERDO + CENTRO + DERECHO</span>
+<span class="gris">──────────────────────────────────────────────────────────────────────────────</span>
+
+ STM32 BlackPill
+ <span class="gris">┌──────────┐</span>                                                         <span class="azul">3.3V</span>
+ <span class="gris">│   PB8    ├──</span><span class="cyan">SCL</span><span class="gris">──────────────┬────────────────────┬──────────────┬───┤</span>
+ <span class="gris">│(I2C1_SCL)│</span>                 <span class="gris">│                    │              │   │</span>
+ <span class="gris">│          │</span>              <span class="gris">[10kΩ]              [10kΩ]   ← solo 1 pull-up</span>
+ <span class="gris">│   PB9    ├──</span><span class="cyan">SDA</span><span class="gris">──────────────┤                    │</span>     <span class="gris">por línea</span>
+ <span class="gris">│(I2C1_SDA)│</span>                 <span class="gris">│                    │              │</span>
+ <span class="gris">│   PB12   ├──</span><span class="morado">XSHUT1</span><span class="gris">─────────┤                    │              │</span>
+ <span class="gris">│   PB13   ├──</span><span class="morado">XSHUT2</span><span class="gris">─────────┤                    │              │</span>
+ <span class="gris">│   PB14   ├──</span><span class="morado">XSHUT3</span><span class="gris">─────────┤                    │              │</span>
+ <span class="gris">│          │</span>                 <span class="gris">│                    │              │</span>
+ <span class="gris">└──────────┘</span>                 <span class="gris">│                    │              │</span>
+                              <span class="gris">▼                    ▼              ▼</span>
+              <span class="cyan"> ┌────────────────┐  ┌────────────────┐  ┌────────────────┐</span>
+              <span class="cyan"> │  VL53L0X IZQ   │  │ VL53L0X CENTRO │  │  VL53L0X DER   │</span>
+              <span class="cyan"> │  addr: 0x30    │  │  addr: 0x31    │  │  addr: 0x29    │</span>
+              <span class="cyan"> │                │  │                │  │                │</span>
+              <span class="cyan"> │ VIN ── </span><span class="azul">3.3V</span>    <span class="cyan">│  │ VIN ── </span><span class="azul">3.3V</span>    <span class="cyan">│  │ VIN ── </span><span class="azul">3.3V</span>    <span class="cyan">│</span>
+              <span class="cyan"> │ GND ── </span><span class="gris">GND</span>    <span class="cyan">│  │ GND ── </span><span class="gris">GND</span>    <span class="cyan">│  │ GND ── </span><span class="gris">GND</span>    <span class="cyan">│</span>
+              <span class="cyan"> │ SCL ── </span><span class="cyan">PB8</span>    <span class="cyan">│  │ SCL ── </span><span class="cyan">PB8</span>    <span class="cyan">│  │ SCL ── </span><span class="cyan">PB8</span>    <span class="cyan">│</span>
+              <span class="cyan"> │ SDA ── </span><span class="cyan">PB9</span>    <span class="cyan">│  │ SDA ── </span><span class="cyan">PB9</span>    <span class="cyan">│  │ SDA ── </span><span class="cyan">PB9</span>    <span class="cyan">│</span>
+              <span class="cyan"> │ XSHUT─ </span><span class="morado">PB12</span>   <span class="cyan">│  │ XSHUT─ </span><span class="morado">PB13</span>   <span class="cyan">│  │ XSHUT─ </span><span class="morado">PB14</span>   <span class="cyan">│</span>
+              <span class="cyan"> │ GPIO1  </span><span class="gris">N/C</span>    <span class="cyan">│  │ GPIO1  </span><span class="gris">N/C</span>    <span class="cyan">│  │ GPIO1  </span><span class="gris">N/C</span>    <span class="cyan">│</span>
+              <span class="cyan"> └────────────────┘  └────────────────┘  └────────────────┘</span>
+                       <span class="gris">▲                    ▲                    ▲</span>
+                   <span class="gris">Sensor Izquierdo    Sensor Centro       Sensor Derecho</span>
+                   <span class="gris">(apunta a pared izq) (apunta al frente) (apunta a pared der)</span>
+
+<span class="naranja">NOTA: Las 2 resistencias 10kΩ van ENTRE la línea y 3.3V (pull-up).</span>
+<span class="naranja">      Solo necesitas UNA por línea (1 en SCL, 1 en SDA) para todo el bus.</span></div>
+  </div>
+
+  <div class="sub">
+    <h3>🔌 Diagrama de cableado – Bus I2C2 (Sensor Trasero)</h3>
+    <div class="diagrama-cable"><span class="titulo">  CABLEADO I2C2 – VL53L0X TRASERO + MPU6050 (bus compartido)</span>
+<span class="gris">──────────────────────────────────────────────────────────────────</span>
+
+ STM32 BlackPill                                              <span class="azul">3.3V</span>
+ <span class="gris">┌──────────┐</span>                                                   <span class="gris">│</span>
+ <span class="gris">│   PB10   ├──</span><span class="cyan">SCL2</span><span class="gris">──────────────┬──────────────────────── [10kΩ]</span>
+ <span class="gris">│(I2C2_SCL)│</span>                 <span class="gris">│                              │</span>
+ <span class="gris">│   PB3    ├──</span><span class="cyan">SDA2</span><span class="gris">──────────────┤──────────────────────── [10kΩ]</span>
+ <span class="gris">│(I2C2_SDA)│</span>                 <span class="gris">│                              │</span>
+ <span class="gris">│   PB15   ├──</span><span class="morado">XSHUT4</span><span class="gris">───────────┤</span>
+ <span class="gris">└──────────┘</span>                 <span class="gris">│</span>
+                              <span class="gris">├──────────────────────────────┐</span>
+                              <span class="gris">▼                              ▼</span>
+              <span class="cyan"> ┌──────────────────────┐  ┌──────────────────────┐</span>
+              <span class="cyan"> │  VL53L0X TRASERO     │  │  MPU6050             │</span>
+              <span class="cyan"> │  addr: 0x29          │  │  addr: 0x68          │</span>
+              <span class="cyan"> │                      │  │                      │</span>
+              <span class="cyan"> │ VIN ─── </span><span class="azul">3.3V</span>        <span class="cyan">│  │ VCC ─── </span><span class="azul">3.3V</span>        <span class="cyan">│</span>
+              <span class="cyan"> │ GND ─── </span><span class="gris">GND</span>        <span class="cyan">│  │ GND ─── </span><span class="gris">GND</span>        <span class="cyan">│</span>
+              <span class="cyan"> │ SCL ─── </span><span class="cyan">PB10</span>       <span class="cyan">│  │ SCL ─── </span><span class="cyan">PB10</span>       <span class="cyan">│</span>
+              <span class="cyan"> │ SDA ─── </span><span class="cyan">PB3</span>        <span class="cyan">│  │ SDA ─── </span><span class="cyan">PB3</span>        <span class="cyan">│</span>
+              <span class="cyan"> │ XSHUT── </span><span class="morado">PB15</span>       <span class="cyan">│  │ AD0 ─── </span><span class="gris">GND</span>        <span class="cyan">│  ← 0x68</span>
+              <span class="cyan"> │ GPIO1   </span><span class="gris">N/C</span>        <span class="cyan">│  │ INT ─── </span><span class="gris">N/C</span>        <span class="cyan">│</span>
+              <span class="cyan"> └──────────────────────┘  └──────────────────────┘</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECCIÓN 6: MPU6050 ═══════════════════════ -->
+<div class="seccion naranja">
+  <div class="sec-titulo">
+    <div class="sec-num">6</div>
+    <span class="emoji">🔄</span>
+    <h2>IMU MPU6050 – Giroscopio</h2>
+  </div>
+
+  <div class="aviso mecate">
+    <div class="icono"></div>
+    <div class="texto">
+      <strong>Para qué sirve:</strong> El MPU6050 mide la velocidad angular en el eje Z (GyroZ_deg_s). Así el robot sabe cuánto gira y puede corregir su trayectoria con el PID. Sin este sensor, el robot no puede mantener una línea recta ni hacer giros precisos.
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>📋 Tabla de conexiones pin a pin del MPU6050</h3>
+    <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Pin MPU6050</th><th>Función</th><th>Conecta a</th><th>Cable</th><th>Nota crítica</th></tr></thead>
+      <tbody>
+        <tr><td><strong>VCC</strong></td><td>Alimentación</td><td>Rail 3.3V (MP1584EN)</td><td><span class="w w-rojo"><span class="dot"></span>Rojo</span></td><td>¡Máximo 3.6V! No usar 5V</td></tr>
+        <tr><td><strong>GND</strong></td><td>Tierra</td><td>GND rail común</td><td><span class="w w-negro"><span class="dot"></span>Negro</span></td><td>–</td></tr>
+        <tr><td><strong>SCL</strong></td><td>Reloj I2C</td><td>STM32 PB10 (I2C2_SCL)</td><td><span class="w w-amarillo"><span class="dot"></span>Amarillo</span></td><td>Comparte bus con VL53L0X trasero</td></tr>
+        <tr><td><strong>SDA</strong></td><td>Datos I2C</td><td>STM32 PB3 (I2C2_SDA)</td><td><span class="w w-verde"><span class="dot"></span>Verde</span></td><td>Comparte bus con VL53L0X trasero</td></tr>
+        <tr><td><strong>AD0</strong></td><td>Bit LSB de dirección I2C</td><td>GND</td><td><span class="w w-negro"><span class="dot"></span>Negro</span></td><td>GND = dirección 0x68 ✓<br>3.3V = dirección 0x69 (no usar)</td></tr>
+        <tr><td><strong>INT</strong></td><td>Pin de interrupción</td><td>Sin conectar (N/C)</td><td>–</td><td>No se usa en el diseño Simulink</td></tr>
+        <tr><td><strong>XDA, XCL</strong></td><td>I2C auxiliar para magnetómetro</td><td>Sin conectar (N/C)</td><td>–</td><td>Solo si agregas brújula (no en este proyecto)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>📐 Diagrama detallado del MPU6050</h3>
+    <div class="diagrama-cable"><span class="titulo">  MPU6050 – CABLEADO DETALLADO</span>
+
+  <span class="gris">┌──────────────────────────────────────────────────────┐</span>
+  <span class="gris">│              MPU6050 Module (breakout)               │</span>
+  <span class="gris">│                                                      │</span>
+  <span class="gris">│  ┌─────────────────────────────────────────────┐    │</span>
+  <span class="gris">│  │           [MPU-6050 chip]                   │    │</span>
+  <span class="gris">│  │      Giroscopio 3 ejes + Acelerómetro 3 ejes│    │</span>
+  <span class="gris">│  └─────────────────────────────────────────────┘    │</span>
+  <span class="gris">│                                                      │</span>
+  <span class="gris">│  [VCC] ────</span><span class="rojo">──────────────────────────────── 3.3V</span>  <span class="gris">│</span>
+  <span class="gris">│  [GND] ────</span><span class="gris">──────────────────────────────── GND</span>   <span class="gris">│</span>
+  <span class="gris">│  [SCL] ────</span><span class="cyan">──────────────────────────────── PB10</span>  <span class="gris">│</span>
+  <span class="gris">│  [SDA] ────</span><span class="cyan">──────────────────────────────── PB3</span>   <span class="gris">│</span>
+  <span class="gris">│  [AD0] ────</span><span class="gris">──────────────────────────────── GND   ← IMPORTANTE</span>
+  <span class="gris">│  [INT] ─── N/C (no conectar)                        │</span>
+  <span class="gris">│  [XDA] ─── N/C                                      │</span>
+  <span class="gris">│  [XCL] ─── N/C                                      │</span>
+  <span class="gris">└──────────────────────────────────────────────────────┘</span>
+
+  El módulo MPU6050 de breakout YA TIENE resistencias pull-up integradas.
+  <span class="naranja">NO agregues más resistencias pull-up en el bus I2C2 si usas un módulo breakout.</span>
+  Si usas el chip sin módulo, pon 10kΩ entre SCL/SDA y 3.3V.
+
+  <span class="verde">En el diagrama Simulink (Imagen 6), el bloque lee:</span>
+    - I2C2 Controller Read
+    - Peripheral: 0x68  (dirección MPU6050 con AD0=GND)
+    - Registros de giroscopio eje Z → GyroZ_deg_s → Control PID</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECCIÓN 7: DRV8833 ═══════════════════════ -->
+<div class="seccion rojo">
+  <div class="sec-titulo">
+    <div class="sec-num">7</div>
+    <span class="emoji">⚡</span>
+    <h2>Driver de Motores DRV8833 × 2</h2>
+  </div>
+
+  <div class="aviso mecate">
+    <div class="icono"></div>
+    <div class="texto">
+      <strong>¿Qué hace el DRV8833?:</strong>
+      El STM32 no puede dar suficiente corriente para mover un motor directamente (daña el chip). El DRV8833 actúa como intermediario: recibe la señal de control (lógica 3.3V, poca corriente) y la amplifica para manejar el motor (6V, hasta 2A).
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>📍 Pines del DRV8833</h3>
+    <div class="diagrama-cable"><span class="titulo">  DRV8833 – PINOUT (módulo breakout más común)</span>
+
+  <span class="gris">  ┌───────────────────────────────────────────────────────────┐</span>
+  <span class="gris">  │                    DRV8833 Module                         │</span>
+  <span class="gris">  │                                                           │</span>
+  <span class="gris">  │   [VM] ──────</span><span class="verde">── Voltaje de motor (6V del XL6009) ────────</span><span class="gris">│</span>
+  <span class="gris">  │   [VCC] ─────</span><span class="azul">── Voltaje lógico (3.3V del Buck) ──────────</span><span class="gris">│</span>
+  <span class="gris">  │   [GND] ─────</span><span class="gris">── GND común ──────────────────────────────</span><span class="gris">│</span>
+  <span class="gris">  │   [nSLEEP] ──</span><span class="azul">── 3.3V (HIGH = chip activo) ───────────────</span><span class="gris">│</span>
+  <span class="gris">  │   [nFAULT] ─ salida (no conectar o a GPIO entrada)       │</span>
+  <span class="gris">  │                                                           │</span>
+  <span class="gris">  │   ── Canal A (motor 1) ──────────────────────────────    │</span>
+  <span class="gris">  │   [AIN1] ────</span><span class="rojo">── Control A1 (PWM velocidad desde STM32) ──</span><span class="gris">│</span>
+  <span class="gris">  │   [AIN2] ────</span><span class="rojo">── Control A2 (dirección desde STM32) ──────</span><span class="gris">│</span>
+  <span class="gris">  │   [AOUT1] ───</span><span class="amarillo">── Motor terminal 1 ────────────────────────</span><span class="gris">│</span>
+  <span class="gris">  │   [AOUT2] ───</span><span class="amarillo">── Motor terminal 2 ────────────────────────</span><span class="gris">│</span>
+  <span class="gris">  │                                                           │</span>
+  <span class="gris">  │   ── Canal B (motor 2, si usas un solo DRV8833) ───────  │</span>
+  <span class="gris">  │   [BIN1] ────</span><span class="rojo">── Control B1 (PWM velocidad desde STM32) ──</span><span class="gris">│</span>
+  <span class="gris">  │   [BIN2] ────</span><span class="rojo">── Control B2 (dirección desde STM32) ──────</span><span class="gris">│</span>
+  <span class="gris">  │   [BOUT1] ───</span><span class="amarillo">── Motor terminal 1 ────────────────────────</span><span class="gris">│</span>
+  <span class="gris">  │   [BOUT2] ───</span><span class="amarillo">── Motor terminal 2 ────────────────────────</span><span class="gris">│</span>
+  <span class="gris">  └───────────────────────────────────────────────────────────┘</span></div>
+  </div>
+
+  <div class="sub">
+    <h3>🔌 Diagrama completo DRV8833 #1 (Motor Izquierdo)</h3>
+    <div class="diagrama-cable"><span class="titulo">  CABLEADO COMPLETO DRV8833 #1 ─ MOTOR IZQUIERDO</span>
+<span class="gris">──────────────────────────────────────────────────────────────────────</span>
+
+  STM32 BlackPill            DRV8833 #1               Motor Izq GA12-N20
+  <span class="gris">┌──────────┐</span>              <span class="gris">┌──────────┐</span>              <span class="gris">┌──────────────────┐</span>
+  <span class="gris">│</span>          <span class="gris">│</span>              <span class="gris">│</span>         <span class="gris">│</span>              <span class="gris">│                  │</span>
+  <span class="gris">│  PA8 ────</span><span class="rojo">────────────► AIN1      │</span>              <span class="gris">│  Motor DC (2 cables)</span>
+  <span class="gris">│(TIM1_CH1)│</span>  <span class="rojo">PWM señal</span>  <span class="gris">│</span> (velocidad)<span class="gris">│</span>              <span class="gris">│                  │</span>
+  <span class="gris">│  PA9 ────</span><span class="rojo">────────────► AIN2      │</span>              <span class="gris">│</span>
+  <span class="gris">│(TIM1_CH2)│</span>  <span class="rojo">DIR señal</span>  <span class="gris">│</span> (dirección)<span class="gris">│──</span><span class="amarillo">AOUT1──────► (+) Cable Rojo Motor</span>
+  <span class="gris">│          │</span>              <span class="gris">│</span>          <span class="gris">│──</span><span class="amarillo">AOUT2──────► (–) Cable Negro Motor</span>
+  <span class="gris">│  3.3V ───</span><span class="azul">────────────► VCC</span>      <span class="gris">│</span>
+  <span class="gris">│  3.3V ───</span><span class="azul">────────────► nSLEEP</span>   <span class="gris">│</span>              <span class="gris">│  Encoder (4 cables)</span>
+  <span class="gris">│  6.0V ───</span><span class="verde">────────────► VM</span>       <span class="gris">│</span>              <span class="gris">│                  │</span>
+  <span class="gris">│  GND ────</span><span class="gris">────────────► GND      │</span>              <span class="gris">│ ┌───────────────</span>
+  <span class="gris">│          │</span>              <span class="gris">│</span>          <span class="gris">│</span>              <span class="gris">│</span><span class="verde">── Cable Verde (Enc VCC) ──► 3.3V</span>
+  <span class="gris">│  PA6 ◄───</span><span class="verde">──────────────────────────────────────</span><span class="gris">│</span><span class="azul">── Cable Azul  (Enc GND) ──► GND</span>
+  <span class="gris">│(TIM3_CH1)│</span>  <span class="verde">Encoder A</span>                          <span class="gris">│</span><span class="amarillo">── Cable Amarillo (Enc A) ──► PA6</span>
+  <span class="gris">│  PA7 ◄───</span><span class="verde">──────────────────────────────────────</span><span class="gris">│</span><span class="blanco">── Cable Blanco   (Enc B) ──► PA7</span>
+  <span class="gris">│(TIM3_CH2)│</span>  <span class="verde">Encoder B</span>  <span class="gris">└──────────┘</span>              <span class="gris">└──────────────────┘</span>
+  <span class="gris">└──────────┘</span>
+
+  <span class="gris">LÓGICA DE CONTROL (según diagrama Simulink):</span>
+  vel_motor_izq &gt; 0: PA8=PWM, PA9=0 → Motor gira adelante
+  vel_motor_izq &lt; 0: PA8=0, PA9=PWM → Motor gira atrás
+  vel_motor_izq = 0: PA8=0, PA9=0   → Motor libre</div>
+  </div>
+
+  <div class="sub">
+    <h3>🔌 Diagrama completo DRV8833 #2 (Motor Derecho)</h3>
+    <div class="diagrama-cable"><span class="titulo">  CABLEADO COMPLETO DRV8833 #2 ─ MOTOR DERECHO</span>
+<span class="gris">──────────────────────────────────────────────────────────────────────</span>
+
+  STM32 BlackPill            DRV8833 #2               Motor Der GA12-N20
+  <span class="gris">┌──────────┐</span>              <span class="gris">┌──────────┐</span>              <span class="gris">┌──────────────────┐</span>
+  <span class="gris">│</span>          <span class="gris">│</span>              <span class="gris">│</span>         <span class="gris">│</span>              <span class="gris">│                  │</span>
+  <span class="gris">│  PA10────</span><span class="rojo">────────────► AIN1      │</span>              <span class="gris">│  Motor DC (2 cables)</span>
+  <span class="gris">│(TIM1_CH3)│</span>  <span class="rojo">PWM señal</span>  <span class="gris">│</span> (velocidad)<span class="gris">│</span>
+  <span class="gris">│  PA11────</span><span class="rojo">────────────► AIN2      │──</span><span class="amarillo">AOUT1──────► (+) Cable Rojo Motor</span>
+  <span class="gris">│(TIM1_CH4)│</span>  <span class="rojo">DIR señal</span>  <span class="gris">│──</span><span class="amarillo">AOUT2──────► (–) Cable Negro Motor</span>
+  <span class="gris">│          │</span>              <span class="gris">│</span>          <span class="gris">│</span>
+  <span class="gris">│  3.3V ───</span><span class="azul">────────────► VCC</span>      <span class="gris">│</span>              <span class="gris">│  Encoder (4 cables)</span>
+  <span class="gris">│  3.3V ───</span><span class="azul">────────────► nSLEEP</span>   <span class="gris">│</span>
+  <span class="gris">│  6.0V ───</span><span class="verde">────────────► VM</span>       <span class="gris">│</span>              <span class="verde">── Cable Verde (Enc VCC) ──► 3.3V</span>
+  <span class="gris">│  GND ────</span><span class="gris">────────────► GND      │</span>              <span class="azul">── Cable Azul  (Enc GND) ──► GND</span>
+  <span class="gris">│          │</span>              <span class="gris">│</span>          <span class="gris">│</span>              <span class="amarillo">── Cable Amarillo (Enc A) ──► PB6</span>
+  <span class="gris">│  PB6 ◄───</span><span class="verde">──────────────────────────────────────</span><span class="blanco">── Cable Blanco   (Enc B) ──► PB7</span>
+  <span class="gris">│(TIM4_CH1)│</span>  <span class="verde">Encoder A  └──────────┘</span>              <span class="gris">└──────────────────┘</span>
+  <span class="gris">│  PB7 ◄───</span><span class="verde">─────────────────────────────────────────────────────────────</span>
+  <span class="gris">│(TIM4_CH2)│</span>  <span class="verde">Encoder B</span>
+  <span class="gris">└──────────┘</span></div>
+  </div>
+
+  <div class="sub">
+    <h3>📊 Tabla de lógica de control de motores</h3>
+    <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>AIN1 (PA8/PA10)</th><th>AIN2 (PA9/PA11)</th><th>Resultado del motor</th><th>Cuándo ocurre</th></tr></thead>
+      <tbody>
+        <tr><td>PWM (ciclo variable)</td><td>LOW (0V)</td><td>Gira hacia adelante a velocidad = duty cycle</td><td>Vel positiva</td></tr>
+        <tr><td>LOW (0V)</td><td>PWM (ciclo variable)</td><td>Gira hacia atrás a velocidad = duty cycle</td><td>Vel negativa</td></tr>
+        <tr><td>LOW (0V)</td><td>LOW (0V)</td><td>Motor en punto muerto (gira libremente)</td><td>Vel = 0</td></tr>
+        <tr><td>HIGH (3.3V)</td><td>HIGH (3.3V)</td><td>Freno de motor (resistencia al movimiento)</td><td>Freno activo</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECCIÓN 8: MOTORES ═══════════════════════ -->
+<div class="seccion verde">
+  <div class="sec-titulo">
+    <div class="sec-num">8</div>
+    <span class="emoji">⚙️</span>
+    <h2>Motores GA12-N20 + Encoders</h2>
+  </div>
+
+  <div class="aviso mecate">
+    <div class="icono"></div>
+    <div class="texto">
+      <strong>El motor viene con 6 cables:</strong>
+      2 para el motor DC y 4 para el encoder. No los confundas. Los 2 cables del motor DC suelen ser más gruesos. Los 4 del encoder son delgados. Si inviertes los cables del motor, solo cambia la dirección de giro – nada se daña. Si inviertes la alimentación del encoder, puede dañarse.
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>🔌 Identificación de los 6 cables del GA12-N20</h3>
+    <div class="diagrama-cable"><span class="titulo">  GA12-N20 CON ENCODER – LOS 6 CABLES</span>
+
+  <span class="gris">     ┌────────────────────────────────────────────────────────┐</span>
+  <span class="gris">     │           Cuerpo del motor GA12-N20                   │</span>
+  <span class="gris">     │  ┌────────────────────────────┐                       │</span>
+  <span class="gris">     │  │   [Engranajes reductores]   │                       │</span>
+  <span class="gris">     │  │                            │───► Eje de salida      │</span>
+  <span class="gris">     │  └────────────────────────────┘                       │</span>
+  <span class="gris">     │  ┌────────────────────────────┐                       │</span>
+  <span class="gris">     │  │   [Motor DC]               │                       │</span>
+  <span class="gris">     │  └────────────────────────────┘                       │</span>
+  <span class="gris">     │  ┌────────────────────────────┐                       │</span>
+  <span class="gris">     │  │ [Encoder magnético Hall]   │                       │</span>
+  <span class="gris">     │  └────────────────────────────┘                       │</span>
+  <span class="gris">     └──────────────────┬─────────────────────────────────────┘</span>
+                          │
+         6 cables salen juntos:
+
+  <span class="rojo">  ═══ Cable ROJO  ══════ Motor DC (+)</span>     → AOUT1 del DRV8833
+  <span class="gris">  ─── Cable NEGRO ─────── Motor DC (–)</span>     → AOUT2 del DRV8833
+  <span class="verde">  ─── Cable VERDE ─────── Encoder VCC</span>     → <span class="azul">3.3V</span>
+  <span class="azul">  ─── Cable AZUL  ─────── Encoder GND</span>     → GND común
+  <span class="amarillo">  ─── Cable AMARILLO───── Encoder Canal A</span> → PA6 (izq) / PB6 (der)
+  <span class="blanco">  ─── Cable BLANCO ─────── Encoder Canal B</span> → PA7 (izq) / PB7 (der)
+
+  <span class="naranja">⚠️ LOS COLORES PUEDEN VARIAR. Verifica con el datasheet de tu lote.</span>
+  <span class="naranja">   Prueba con multímetro: los 2 cables del motor DC tienen continuidad directa</span>
+  <span class="naranja">   con las escobillas. Los otros 4 son del encoder.</span></div>
+  </div>
+
+  <div class="sub">
+    <h3>📊 Tabla pin a pin completa – Motor Izquierdo</h3>
+    <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Cable motor</th><th>Color típico</th><th>Conecta a</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>Motor DC (+)</td><td><span class="w w-rojo"><span class="dot"></span>Rojo</span></td><td>DRV8833 #1 – AOUT1</td><td>Si el motor gira al revés, intercambia rojo y negro</td></tr>
+        <tr><td>Motor DC (–)</td><td><span class="w w-negro"><span class="dot"></span>Negro</span></td><td>DRV8833 #1 – AOUT2</td><td>–</td></tr>
+        <tr><td>Encoder VCC</td><td><span class="w w-verde"><span class="dot"></span>Verde</span></td><td>Rail 3.3V</td><td>¡NUNCA conectar a 5V!</td></tr>
+        <tr><td>Encoder GND</td><td><span class="w w-azul"><span class="dot"></span>Azul</span></td><td>GND común</td><td>–</td></tr>
+        <tr><td>Encoder Canal A</td><td><span class="w w-amarillo"><span class="dot"></span>Amarillo</span></td><td>STM32 – <strong>PA6</strong> (TIM3_CH1)</td><td>Si el encoder cuenta al revés, intercambia A y B</td></tr>
+        <tr><td>Encoder Canal B</td><td><span class="w w-blanco"><span class="dot"></span>Blanco</span></td><td>STM32 – <strong>PA7</strong> (TIM3_CH2)</td><td>–</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>📊 Tabla pin a pin completa – Motor Derecho</h3>
+    <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Cable motor</th><th>Color típico</th><th>Conecta a</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>Motor DC (+)</td><td><span class="w w-rojo"><span class="dot"></span>Rojo</span></td><td>DRV8833 #2 – AOUT1</td><td>Si el motor gira al revés, intercambia rojo y negro</td></tr>
+        <tr><td>Motor DC (–)</td><td><span class="w w-negro"><span class="dot"></span>Negro</span></td><td>DRV8833 #2 – AOUT2</td><td>–</td></tr>
+        <tr><td>Encoder VCC</td><td><span class="w w-verde"><span class="dot"></span>Verde</span></td><td>Rail 3.3V</td><td>¡NUNCA conectar a 5V!</td></tr>
+        <tr><td>Encoder GND</td><td><span class="w w-azul"><span class="dot"></span>Azul</span></td><td>GND común</td><td>–</td></tr>
+        <tr><td>Encoder Canal A</td><td><span class="w w-amarillo"><span class="dot"></span>Amarillo</span></td><td>STM32 – <strong>PB6</strong> (TIM4_CH1)</td><td>–</td></tr>
+        <tr><td>Encoder Canal B</td><td><span class="w w-blanco"><span class="dot"></span>Blanco</span></td><td>STM32 – <strong>PB7</strong> (TIM4_CH2)</td><td>–</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECCIÓN 9: BOTÓN ═══════════════════════ -->
+<div class="seccion">
+  <div class="sec-titulo">
+    <div class="sec-num">9</div>
+    <span class="emoji">🔘</span>
+    <h2>Botón de Modo – GPIOB</h2>
+  </div>
+
+  <div class="aviso mecate">
+    <div class="icono"></div>
+    <div class="texto">
+      <strong>¿Para qué sirve?:</strong>
+      El botón selecciona el modo de operación del robot. Cuando está sin presionar (HIGH), el robot corre en MODO_FAST_RUN (ya conoce el mapa y va rápido). Cuando está presionado (LOW), corre en MODO_EXPLORACION (mapea el laberinto despacio). En el Simulink hay un bloque NOT que invierte la lógica.
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>🔌 Diagrama de conexión del botón</h3>
+    <div class="diagrama-cable"><span class="titulo">  BOTÓN DE MODO – CABLEADO CON PULL-UP</span>
+
+  Opción 1: Pull-up EXTERNO (resistencia física)
+  <span class="gris">─────────────────────────────────────────────────────</span>
+
+  <span class="azul">3.3V</span> ──────┬──────────────────────────────────────────────
+              │
+           <span class="gris">[10kΩ]</span>  ← resistencia pull-up externa
+              │
+              ├─────────────────────────────────► STM32 PB0
+              │
+          <span class="gris">╔══════╗</span>
+          <span class="gris">║BOTÓN ║</span>  ← pulsador táctil de 4 terminales
+          <span class="gris">╚══════╝</span>
+              │
+  <span class="gris">GND</span>  ──────────────────────────────────────────────────
+
+  ESTADO SIN PRESIONAR: PB0 = <span class="azul">3.3V (HIGH)</span> → lógica 1 → NOT → MODO_FAST_RUN
+  ESTADO PRESIONADO:    PB0 = <span class="gris">0V (LOW)</span>   → lógica 0 → NOT → MODO_EXPLORACION
+
+  <span class="gris">──────────────────────────────────────────────────────</span>
+  Opción 2: Pull-up INTERNO del STM32 (más fácil)
+  <span class="gris">─────────────────────────────────────────────────────</span>
+
+  Configura PB0 como GPIO_INPUT con MODE = INPUT_PULLUP en STM32CubeMX.
+  El STM32 activa internamente una resistencia pull-up de ~40kΩ.
+  Solo necesitas 2 cables:
+
+  STM32 PB0 ────────────────────────── Terminal 1 del botón
+  GND       ────────────────────────── Terminal 2 del botón
+  (Terminal 3 y 4 son iguales a 1 y 2 en un pulsador estándar)</div>
+  </div>
+
+  <div class="aviso tip">
+    <div class="icono"></div>
+    <div class="texto">
+      <strong>Recomendación:</strong> Usa la Opción 2 (pull-up interno). Es más simple, menos cables, y el STM32 ya trae esta funcionalidad. Solo configura PB0 como <code>GPIO_Input</code> con <code>Pull-up</code> en STM32CubeMX.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECCIÓN 10: PROGRAMACIÓN ═══════════════════════ -->
+<div class="seccion">
+  <div class="sec-titulo">
+    <div class="sec-num">10</div>
+    <span class="emoji">💻</span>
+    <h2>Programación – ST-Link SWD</h2>
+  </div>
+
+  <div class="sub">
+    <h3>🔌 Conexiones del ST-Link V2 al STM32</h3>
+    <div class="diagrama-cable"><span class="titulo">  ST-LINK V2 ──────────────────────────────► STMF32 BlackPill</span>
+<span class="gris">──────────────────────────────────────────────────────────────────</span>
+
+  <span class="gris">┌──────────────────────┐</span>              <span class="gris">┌─────────────────────┐</span>
+  <span class="gris">│     ST-LINK V2        │</span>              <span class="gris">│    STM32 BlackPill  │</span>
+  <span class="gris">│                      │</span>              <span class="gris">│                     │</span>
+  <span class="gris">│  [3.3V] ─────────────</span><span class="rojo">────────────────</span><span class="gris">► [3V3]              │</span>
+  <span class="gris">│  [GND]  ─────────────</span><span class="gris">────────────────► [GND]              │</span>
+  <span class="gris">│  [SWDIO]─────────────</span><span class="naranja">────────────────</span><span class="gris">► [PA13/SWDIO]       │</span>
+  <span class="gris">│  [SWDCLK]────────────</span><span class="amarillo">────────────────</span><span class="gris">► [PA14/SWDCLK]      │</span>
+  <span class="gris">│  [RST]   ────────────</span><span class="morado">────────────────</span><span class="gris">► [NRST] (opcional)  │</span>
+  <span class="gris">│                      │</span>              <span class="gris">└─────────────────────┘</span>
+  <span class="gris">│  [USB]───────────────</span><span class="cyan">────────────────► PC (cable USB-A)</span>
+  <span class="gris">└──────────────────────┘</span>
+
+  <span class="naranja">IMPORTANTE: Conecta siempre GND primero.</span>
+  <span class="naranja">Si ya tienes la batería conectada al STM32, el pin 3.3V del ST-Link</span>
+  <span class="naranja">puede omitirse (es solo referencia de voltaje, no alimenta).</span></div>
+  </div>
+
+  <div class="sub">
+    <h3>🔧 Pasos para grabar el firmware desde MATLAB/Simulink</h3>
+    <div class="pasos">
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Configura el hardware target en Simulink:</strong> Ve a <em>Model Configuration Parameters → Hardware Implementation</em> y selecciona <strong>STMicroelectronics → STM32F4xx Based</strong>. Asegúrate que esté configurado tu modelo de chip.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Verifica que el ST-Link está detectado:</strong> Abre STM32CubeProgrammer, conecta el ST-Link y verifica que el software detecte el STM32. Si no lo detecta, revisa las conexiones SWD.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Genera y despliega el código:</strong> En Simulink, haz clic en <strong>Deploy to Hardware</strong> (o Ctrl+B → Build and Deploy). Simulink generará el código C, lo compilará y grabará automáticamente al STM32 via ST-Link.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Verifica el arranque:</strong> El STM32 debería iniciar automáticamente el firmware. Si no, presiona el botón NRST (reset) de la BlackPill o desconecta/reconecta la alimentación.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECCIÓN 11: DIAGRAMA GLOBAL ═══════════════════════ -->
+<div class="resumen-final">
+  <h2>📐 Diagrama Global del Sistema Completo</h2>
+  <div class="diagrama-cable" style="background:#0a0f1a;"><span class="titulo">╔══════════════════════════════════════════════════════════════════════════════════════════╗
+║                    SISTEMA COMPLETO ROBOT MICROMOUSE STM32F401CCU6                     ║
+╚══════════════════════════════════════════════════════════════════════════════════════════╝</span>
+
+<span class="amarillo">━━━━━━━━━━━━━━━━━━━━━━━━━ ALIMENTACIÓN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+       <span class="rojo">╔════════════╗  SW   ╔════════════════╗</span>
+       <span class="rojo">║ LiPo 3.7V  ╟──────►║  MP1584EN Buck ╟──────────────────────────────────► 3.3V RAIL</span>
+       <span class="rojo">║  500mAh    ║  ON/  ║  (ajustar 3.3V)║</span>
+       <span class="rojo">╚════╤═══════╝  OFF  ╚════════════════╝</span>
+            <span class="rojo">│</span>
+            <span class="rojo">└──────────────► ╔════════════════╗</span>
+                            <span class="verde">║  XL6009 Boost  ╟──────────────────────────────────► 6.0V RAIL</span>
+                            <span class="verde">║  (ajustar 6V)  ║</span>
+                            <span class="verde">╚════════════════╝</span>
+            <span class="gris">│</span>
+            <span class="gris">└──────────────────────────────────────────────────────────── GND RAIL</span>
+
+<span class="amarillo">━━━━━━━━━━━━━━━━━━━━━━━━━ STM32 BLACKPILL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+<span class="azul">  3.3V RAIL ──► 3V3                     GND ◄── GND RAIL</span>
+
+  <span class="gris">                 ╔══════════════════════════════════════════╗</span>
+  <span class="morado">PB12──►XSHUT1   ║                                          ║   PB9◄──►SDA1──► VL53L0X IZQ/CEN/DER</span>
+  <span class="morado">PB13──►XSHUT2   ║          STM32F401CCU6                   ║   PB8◄──►SCL1──► VL53L0X IZQ/CEN/DER</span>
+  <span class="morado">PB14──►XSHUT3   ║             BlackPill                    ║   PB3◄──►SDA2──► VL53L0X TRS + MPU6050</span>
+  <span class="morado">PB15──►XSHUT4   ║                                          ║  PB10◄──►SCL2──► VL53L0X TRS + MPU6050</span>
+                  <span class="gris">║                                          ║</span>
+  <span class="rojo">PA8 ──►PWM Izq  ║    [Red Neuronal IA]                     ║  PA6◄──TIM3CH1◄── Encoder IZQ Canal A</span>
+  <span class="rojo">PA9 ──►DIR Izq  ║    [Control PID]                         ║  PA7◄──TIM3CH2◄── Encoder IZQ Canal B</span>
+  <span class="rojo">PA10──►PWM Der  ║    [Mapa_Paredes]                        ║  PB6◄──TIM4CH1◄── Encoder DER Canal A</span>
+  <span class="rojo">PA11──►DIR Der  ║                                          ║  PB7◄──TIM4CH2◄── Encoder DER Canal B</span>
+                  <span class="gris">║                                          ║</span>
+  <span class="naranja">PB0 ◄──Botón    ║                                          ║  PA13◄──►SWDIO  ◄──► ST-Link</span>
+                  <span class="gris">╚══════════════════════════════════════════╝</span>  <span class="naranja">PA14◄──SWDCLK ◄── ST-Link</span>
+
+<span class="amarillo">━━━━━━━━━━━━━━━━━━━━━━━━━ SENSORES I2C ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+  Bus I2C1 (PB8=SCL, PB9=SDA):
+  <span class="cyan">  ┌── VL53L0X IZQ  (addr 0x30): VIN=3.3V, GND, SCL=PB8, SDA=PB9, XSHUT=PB12</span>
+  <span class="cyan">  ├── VL53L0X CEN  (addr 0x31): VIN=3.3V, GND, SCL=PB8, SDA=PB9, XSHUT=PB13</span>
+  <span class="cyan">  └── VL53L0X DER  (addr 0x29): VIN=3.3V, GND, SCL=PB8, SDA=PB9, XSHUT=PB14</span>
+  <span class="gris">       └── Pull-ups 10kΩ entre SCL/SDA y 3.3V (1 por línea)</span>
+
+  Bus I2C2 (PB10=SCL, PB3=SDA):
+  <span class="cyan">  ├── VL53L0X TRS  (addr 0x29): VIN=3.3V, GND, SCL=PB10, SDA=PB3, XSHUT=PB15</span>
+  <span class="morado">  └── MPU6050      (addr 0x68): VCC=3.3V, GND, SCL=PB10, SDA=PB3, AD0=GND</span>
+  <span class="gris">       └── Pull-ups 10kΩ entre SCL/SDA y 3.3V (solo si no son módulos breakout)</span>
+
+<span class="amarillo">━━━━━━━━━━━━━━━━━━━━━━━━━ MOTORES Y DRIVERS ━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+  <span class="rojo">PA8 ──► DRV8833#1 AIN1 ──► AOUT1/AOUT2 ──► Motor IZQ (rojo/negro)</span>
+  <span class="rojo">PA9 ──► DRV8833#1 AIN2</span>
+  <span class="verde">         DRV8833#1 VM   ◄── 6V RAIL</span>
+  <span class="azul">         DRV8833#1 VCC  ◄── 3.3V RAIL</span>
+  <span class="azul">         DRV8833#1 nSLEEP ◄── 3.3V (siempre activo)</span>
+  <span class="gris">         DRV8833#1 GND  ◄── GND RAIL</span>
+  <span class="verde">         Motor IZQ Encoder: verde=3.3V, azul=GND, amarillo=PA6, blanco=PA7</span>
+
+  <span class="rojo">PA10──► DRV8833#2 AIN1 ──► AOUT1/AOUT2 ──► Motor DER (rojo/negro)</span>
+  <span class="rojo">PA11──► DRV8833#2 AIN2</span>
+  <span class="verde">         DRV8833#2 VM   ◄── 6V RAIL</span>
+  <span class="azul">         DRV8833#2 VCC  ◄── 3.3V RAIL</span>
+  <span class="azul">         DRV8833#2 nSLEEP ◄── 3.3V (siempre activo)</span>
+  <span class="gris">         DRV8833#2 GND  ◄── GND RAIL</span>
+  <span class="verde">         Motor DER Encoder: verde=3.3V, azul=GND, amarillo=PB6, blanco=PB7</span></div>
+</div>
+
+<!-- ═══════════════════════ SECCIÓN 12: CHECKLIST ═══════════════════════ -->
+<div class="seccion verde">
+  <div class="sec-titulo">
+    <div class="sec-num">12</div>
+    <span class="emoji">✅</span>
+    <h2>Checklist – Verifica antes de encender</h2>
+  </div>
+
+  <div class="aviso peligro">
+    <div class="icono"></div>
+    <div class="texto">
+      <strong>¡LEE ESTO ANTES DE CONECTAR LA BATERÍA!</strong>
+      Sigue la lista EN ORDEN. Cada punto previene un daño diferente. Si no puedes marcar un punto, no avances al siguiente.
+    </div>
+  </div>
+
+  <div class="check-grid">
+    <div class="check-group">
+      <h4>⚡ Alimentación – Verifica primero</h4>
+      <div class="check-item"><div class="check-box"></div><span>Batería LiPo cargada y balanceada (mide: 3.7–4.2V por celda)</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Switch en posición OFF antes de cualquier conexión</span></div>
+      <div class="check-item"><div class="check-box"></div><span>MP1584EN ajustado a exactamente 3.30V (medir sin carga)</span></div>
+      <div class="check-item"><div class="check-box"></div><span>XL6009 ajustado a exactamente 6.00V (medir sin carga)</span></div>
+      <div class="check-item"><div class="check-box"></div><span>GND común conectado a TODOS los módulos</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Sin cortocircuito en rail 3.3V (mide resistencia &gt;1kΩ entre 3.3V y GND con todo apagado)</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Sin cortocircuito en rail 6V</span></div>
+      <div class="check-item"><div class="check-box"></div><span>nSLEEP de ambos DRV8833 conectados a 3.3V</span></div>
+    </div>
+    <div class="check-group">
+      <h4>🔭 Sensores VL53L0X</h4>
+      <div class="check-item"><div class="check-box"></div><span>VL53L0X IZQ: VIN→3.3V, GND→GND, SCL→PB8, SDA→PB9, XSHUT→PB12</span></div>
+      <div class="check-item"><div class="check-box"></div><span>VL53L0X CEN: VIN→3.3V, GND→GND, SCL→PB8, SDA→PB9, XSHUT→PB13</span></div>
+      <div class="check-item"><div class="check-box"></div><span>VL53L0X DER: VIN→3.3V, GND→GND, SCL→PB8, SDA→PB9, XSHUT→PB14</span></div>
+      <div class="check-item"><div class="check-box"></div><span>VL53L0X TRASERO: VIN→3.3V, GND→GND, SCL→PB10, SDA→PB3, XSHUT→PB15</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Pull-ups 10kΩ instalados (SCL bus1, SDA bus1, SCL bus2, SDA bus2)</span></div>
+    </div>
+    <div class="check-group">
+      <h4>🔄 MPU6050 (Giroscopio)</h4>
+      <div class="check-item"><div class="check-box"></div><span>VCC → 3.3V (¡no 5V!)</span></div>
+      <div class="check-item"><div class="check-box"></div><span>GND → GND común</span></div>
+      <div class="check-item"><div class="check-box"></div><span>SCL → STM32 PB10</span></div>
+      <div class="check-item"><div class="check-box"></div><span>SDA → STM32 PB3</span></div>
+      <div class="check-item"><div class="check-box"></div><span>AD0 → GND (para dirección 0x68)</span></div>
+      <div class="check-item"><div class="check-box"></div><span>INT → sin conectar</span></div>
+    </div>
+    <div class="check-group">
+      <h4>⚙️ Motores + Drivers</h4>
+      <div class="check-item"><div class="check-box"></div><span>DRV8833 #1: VM→6V, VCC→3.3V, nSLEEP→3.3V, GND→GND</span></div>
+      <div class="check-item"><div class="check-box"></div><span>DRV8833 #1: AIN1→PA8, AIN2→PA9</span></div>
+      <div class="check-item"><div class="check-box"></div><span>DRV8833 #1: AOUT1/AOUT2 → Motor Izquierdo (cables DC)</span></div>
+      <div class="check-item"><div class="check-box"></div><span>DRV8833 #2: VM→6V, VCC→3.3V, nSLEEP→3.3V, GND→GND</span></div>
+      <div class="check-item"><div class="check-box"></div><span>DRV8833 #2: AIN1→PA10, AIN2→PA11</span></div>
+      <div class="check-item"><div class="check-box"></div><span>DRV8833 #2: AOUT1/AOUT2 → Motor Derecho (cables DC)</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Encoder Izq: VCC→3.3V, GND→GND, A→PA6, B→PA7</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Encoder Der: VCC→3.3V, GND→GND, A→PB6, B→PB7</span></div>
+    </div>
+    <div class="check-group">
+      <h4>🔘 Control y Programación</h4>
+      <div class="check-item"><div class="check-box"></div><span>Botón entre PB0 y GND (con pull-up interno o externo 10kΩ)</span></div>
+      <div class="check-item"><div class="check-box"></div><span>ST-Link: GND→GND, 3.3V→3V3, SWDIO→PA13, SWDCLK→PA14</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Firmware generado y cargado desde Simulink sin errores</span></div>
+    </div>
+    <div class="check-group">
+      <h4>🧪 Prueba inicial (con todo conectado y ON)</h4>
+      <div class="check-item"><div class="check-box"></div><span>Mide 3.3V en el rail de lógica (con carga)</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Mide 6.0V en el rail de motores</span></div>
+      <div class="check-item"><div class="check-box"></div><span>STM32 no se calienta (normal: tibio. Anormal: quema)</span></div>
+      <div class="check-item"><div class="check-box"></div><span>DRV8833 no se calientan en exceso en reposo</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Motores responden a comandos de prueba</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Sensores detectan objetos al acercar la mano</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECCIÓN 13: TROUBLESHOOTING ═══════════════════════ -->
+<div class="seccion">
+  <div class="sec-titulo">
+    <div class="sec-num">13</div>
+    <span class="emoji">🔧</span>
+    <h2>Problemas Comunes y Cómo Resolverlos</h2>
+  </div>
+
+  <div class="trouble-item">
+    <div class="trouble-problema">❌ El VL53L0X no aparece en el I2C scanner</div>
+    <div class="trouble-causa">📌 Causa: El pin XSHUT está en LOW (sensor apagado), o la dirección cambió mal, o el bus I2C está sin pull-up</div>
+    <div class="trouble-solucion">✅ Solución: Verifica que XSHUT = HIGH durante operación. Agrega resistencias pull-up 10kΩ entre SCL/SDA y 3.3V. Ejecuta el procedimiento de asignación de direcciones en el orden correcto.</div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="trouble-problema">❌ El MPU6050 no responde (no aparece en 0x68)</div>
+    <div class="trouble-causa">📌 Causa: El pin AD0 está conectado a 3.3V en lugar de GND, haciendo que la dirección sea 0x69</div>
+    <div class="trouble-solucion">✅ Solución: Conecta el pin AD0 del MPU6050 directamente a GND. Verifica con el multímetro que haya 0V en AD0.</div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="trouble-problema">❌ El motor no gira pero el DRV8833 está muy caliente</div>
+    <div class="trouble-causa">📌 Causa: Cortocircuito en los cables del motor o sobrecorriente. El DRV8833 activa la protección térmica.</div>
+    <div class="trouble-solucion">✅ Solución: Desconecta el motor inmediatamente. Mide con multímetro la resistencia entre AOUT1 y AOUT2 del driver: debe ser la resistencia del devanado del motor (~5-15Ω). Si es 0Ω hay corto. Verifica que ningún cable del motor toca GND o 3.3V.</div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="trouble-problema">❌ El motor gira en dirección incorrecta</div>
+    <div class="trouble-causa">📌 Causa: Los cables del motor DC están invertidos (AOUT1/AOUT2)</div>
+    <div class="trouble-solucion">✅ Solución: Intercambia los dos cables del motor DC (el rojo y negro que van del DRV8833 al motor). Esto no daña nada. El encoder no se afecta.</div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="trouble-problema">❌ El encoder cuenta en dirección incorrecta</div>
+    <div class="trouble-causa">📌 Causa: Los canales A y B del encoder están invertidos</div>
+    <div class="trouble-solucion">✅ Solución: Intercambia los cables del Canal A y Canal B del encoder (amarillo y blanco). No hay riesgo de daño al intercambiarlos.</div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="trouble-problema">❌ El STM32 se reinicia constantemente (flickering del LED)</div>
+    <div class="trouble-causa">📌 Causa: Voltaje 3.3V inestable, corriente insuficiente del regulador, o condensadores faltantes</div>
+    <div class="trouble-solucion">✅ Solución: Agrega condensador electrolítico 10µF en la salida del MP1584EN. Agrega condensadores 100nF cerca de los pines VDD del STM32. Verifica que el Buck pueda dar al menos 500mA.</div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="trouble-problema">❌ El ST-Link no detecta el STM32 (Error: No target connected)</div>
+    <div class="trouble-causa">📌 Causa: Pin BOOT0 en HIGH, STM32 en modo bootloader, o conexiones SWD invertidas</div>
+    <div class="trouble-solucion">✅ Solución: Verifica que BOOT0 esté a GND (la BlackPill tiene un jumper/resistor para esto). Mantén presionado el botón RESET de la BlackPill mientras haces clic en Connect en STM32CubeProgrammer. Luego suelta el reset.</div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="trouble-problema">❌ Los datos de los sensores son erráticos/ruidosos</div>
+    <div class="trouble-causa">📌 Causa: Cables I2C demasiado largos, sin pull-ups, o velocidad de bus muy alta</div>
+    <div class="trouble-solucion">✅ Solución: Mantén los cables I2C menores a 20cm. Usa resistencias pull-up de 4.7kΩ en lugar de 10kΩ. Reduce la velocidad del bus I2C a 100kHz (modo estándar) en STM32CubeMX si hay errores.</div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="trouble-problema">❌ El robot gira en círculos al intentar avanzar recto</div>
+    <div class="trouble-causa">📌 Causa: Los motores tienen velocidades mecánicas diferentes o el PID no está calibrado</div>
+    <div class="trouble-solucion">✅ Solución: Calibra los parámetros Kp, Ki, Kd del bloque Control_PID en Simulink. Prueba cada motor por separado para verificar que tienen respuesta similar. El giroscopio MPU6050 corrige esto dinámicamente si el PID está bien ajustado.</div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="trouble-problema">❌ El robot no cambia de modo con el botón</div>
+    <div class="trouble-causa">📌 Causa: El pin PB0 no está configurado como INPUT, o el pull-up no está activo</div>
+    <div class="trouble-solucion">✅ Solución: Verifica en STM32CubeMX que PB0 sea GPIO_Input con Pull-up. Si usas pull-up externo, verifica que la resistencia 10kΩ esté entre PB0 y 3.3V. Mide con multímetro: sin presionar debe leer 3.3V, presionado debe leer 0V.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECCIÓN 14: CUBEMX ═══════════════════════ -->
+<div class="seccion cyan">
+  <div class="sec-titulo">
+    <div class="sec-num">14</div>
+    <span class="emoji">⚙️</span>
+    <h2>Configuración en STM32CubeMX – Guía rápida</h2>
+  </div>
+
+  <div class="aviso mecate">
+    <div class="icono"></div>
+    <div class="texto">
+      <strong>¿Para qué sirve STM32CubeMX?:</strong>
+      Es la herramienta de ST para configurar los periféricos del STM32 (timers, I2C, GPIO, etc.) y generar el código de inicialización. Simulink/Embedded Coder lo usa por detrás. Si tu proyecto Simulink ya viene configurado, revisa que los periféricos coincidan con esta tabla.
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>📋 Resumen de configuración de periféricos</h3>
+    <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Periférico</th><th>Modo</th><th>Pines</th><th>Parámetros clave</th></tr></thead>
+      <tbody>
+        <tr><td><strong>TIM1</strong></td><td>PWM Generation CH1/CH2/CH3/CH4</td><td>PA8, PA9, PA10, PA11</td><td>Frecuencia: 20kHz. Counter period según clock. Preescaler ajustar para 20kHz.</td></tr>
+        <tr><td><strong>TIM3</strong></td><td>Encoder Mode (CH1+CH2)</td><td>PA6, PA7</td><td>Mode: Encoder Mode TI1 and TI2. Counter period: 65535 (max).</td></tr>
+        <tr><td><strong>TIM4</strong></td><td>Encoder Mode (CH1+CH2)</td><td>PB6, PB7</td><td>Igual que TIM3.</td></tr>
+        <tr><td><strong>I2C1</strong></td><td>I2C</td><td>PB8 (SCL), PB9 (SDA)</td><td>Speed: 400kHz (Fast Mode) o 100kHz (Standard). Para VL53L0X Izq/Cen/Der.</td></tr>
+        <tr><td><strong>I2C2</strong></td><td>I2C</td><td>PB10 (SCL), PB3 (SDA)</td><td>Speed: 400kHz. Para VL53L0X Trasero + MPU6050.</td></tr>
+        <tr><td><strong>PB12</strong></td><td>GPIO_Output</td><td>PB12</td><td>Output level: Low (default). XSHUT Sensor IZQ.</td></tr>
+        <tr><td><strong>PB13</strong></td><td>GPIO_Output</td><td>PB13</td><td>Output level: Low (default). XSHUT Sensor CEN.</td></tr>
+        <tr><td><strong>PB14</strong></td><td>GPIO_Output</td><td>PB14</td><td>Output level: Low (default). XSHUT Sensor DER.</td></tr>
+        <tr><td><strong>PB15</strong></td><td>GPIO_Output</td><td>PB15</td><td>Output level: Low (default). XSHUT Sensor TRASERO.</td></tr>
+        <tr><td><strong>PB0</strong></td><td>GPIO_Input</td><td>PB0</td><td>Pull-up activado. GPIO mode: Input. Para botón de modo.</td></tr>
+        <tr><td><strong>SYS</strong></td><td>Debug: Serial Wire</td><td>PA13, PA14</td><td>Debug: SWD. Siempre habilitado para programación.</td></tr>
+        <tr><td><strong>Clock</strong></td><td>HSE / PLL</td><td>–</td><td>HCLK = 84 MHz (máximo del STM32F401). Usar cristal externo 25MHz si disponible.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>🔧 Secuencia de configuración en STM32CubeMX</h3>
+    <div class="pasos">
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Crea un nuevo proyecto:</strong> Abre STM32CubeMX → New Project → busca <em>STM32F401CCU6</em> → selecciónalo → Start Project.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Configura el clock:</strong> Ve a <em>Clock Configuration</em>. Selecciona HSI o HSE. Sube HCLK a <strong>84 MHz</strong> usando el PLL. El asistente puede configurarlo automáticamente.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Configura SWD:</strong> En <em>System Core → SYS</em>, pon <strong>Debug = Serial Wire</strong>. Esto habilita PA13 y PA14 para programación.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Configura I2C1:</strong> En <em>Connectivity → I2C1</em>, selecciona <strong>I2C</strong>. Speed: <em>Fast Mode 400kHz</em>. Los pines PB8/PB9 se asignan solos.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Configura I2C2:</strong> En <em>Connectivity → I2C2</em>, igual que I2C1. Pines PB10 (SCL) y PB3 (SDA) se asignan automáticamente.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Configura TIM1 para PWM:</strong> En <em>Timers → TIM1</em> → <em>Clock Source: Internal Clock</em>. Luego en cada channel (CH1 a CH4) selecciona <em>PWM Generation CH1/2/3/4</em>.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Configura TIM3 para encoder:</strong> En <em>Timers → TIM3</em> → <em>Combined Channels: Encoder Mode</em>. Selecciona <em>Encoder Mode TI1 and TI2</em>. Los pines PA6/PA7 se asignan solos.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Configura TIM4 igual que TIM3:</strong> Encoder mode en PB6/PB7.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Configura GPIO de XSHUT:</strong> Click en PB12, PB13, PB14, PB15 en el diagrama de pines → selecciona <em>GPIO_Output</em> para cada uno.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Configura PB0 para botón:</strong> Click en PB0 → selecciona <em>GPIO_Input</em>. En el panel de GPIO, activa <em>Pull-up</em>.</div></div>
+      <div class="paso"><div class="paso-num"></div><div class="paso-content"><strong>Genera el código:</strong> Click en <em>GENERATE CODE</em>. Selecciona el IDE (para Simulink/Embedded Coder generalmente no necesitas generar código manualmente – Simulink lo hace).</div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end wrap -->
+
+<footer>
+  <p>🤖 Manual de Conexiones Robot Micromouse STM32F401CCU6</p>
+  <p>Basado en diagrama Simulink con <span>VL53L0X × 4 · MPU6050 · DRV8833 × 2 · GA12-N20 × 2</span></p>
+  <p style="margin-top:8px;font-size:11px;">Guía para principiantes – Verifica siempre dos veces antes de encender ⚡</p>
+</footer>
+
 </body>
 </html>
